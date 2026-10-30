@@ -2,7 +2,8 @@ import { afterEach, expect, it, vi } from "vitest";
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { getBuiltinModels } from "@earendil-works/pi-ai/providers/all";
-import { fixture, PACKAGES, session, standIn } from "./session.js";
+import { SAID as said } from "../scripts/vendors.mjs";
+import { fixture, type Known, type Model, PACKAGES, session, standIn } from "./session.js";
 
 const cleanups: (() => unknown)[] = [];
 afterEach(async () => { for (const cleanup of cleanups.splice(0).reverse()) await cleanup(); });
@@ -75,4 +76,108 @@ it("says of a model what the box says beside what pi says, and of no other", asy
   expect(models.find(model => model.id === "gpt-6-sol")!.compat).toEqual({ ...(given.compat as object | undefined), supportsMidConvoEffort: false });
   expect(models).toHaveLength(getBuiltinModels("openai").length);
   expect(models.filter(model => model.compat?.["supportsMidConvoEffort"] === false).map(model => model.id)).toEqual(["gpt-6-sol"]);
+}, 60_000);
+
+const SAID = said as Readonly<Record<string, { readonly compat?: Readonly<Record<string, Readonly<Record<string, unknown>>>> }>>;
+const VENDORS = ["openrouter", "opencode", "openai"] as const;
+const ids = (models: readonly Model[]): readonly string[] => models.map(model => model.id).sort();
+const counts = (known: Known) => ({ chat: known.chat.length, image: known.image.length, classifier: known.classifier.length });
+const plain = async (provider: string): Promise<Known> => (await open({ packages: [fixture("catalogue")] })).known(provider);
+
+it.each(VENDORS)("keeps every model of every operation of %s, before the package, with it, off and on again", async (provider) => {
+  const before = await plain(provider);
+  expect(before.image.length + before.classifier.length).toBeGreaterThan(0);
+  const at = await listener();
+  const base = [fixture("catalogue"), fixture("reload")];
+  const pi = await open({ packages: [...base, fixture("routed")], env: routed(at.origin, provider, provider === "openai" ? { ROUTED_COMPAT: JSON.stringify({ "gpt-6-luna": { supportsMidConvoEffort: false } }) } : {}) });
+  const same = (known: Known): void => { for (const type of ["chat", "image", "classifier"] as const) expect(ids(known[type]), type).toEqual(ids(before[type])); };
+  const after = await pi.known(provider);
+  same(after);
+  for (const type of ["chat", "image", "classifier"] as const) for (const model of after[type]) expect(model.baseUrl.startsWith(`${at.origin}/providers/own/${provider}/`), `${type} ${model.id}: ${model.baseUrl}`).toBe(true);
+  const off = { source: fixture("routed"), extensions: [] };
+  await pi.reload([...base, off]);
+  await vi.waitFor(async () => { expect((await pi.known(provider)).chat.every(model => !model.baseUrl.startsWith(at.origin))).toBe(true); }, { timeout: 20_000, interval: 100 });
+  const offAgain = await pi.known(provider);
+  same(offAgain);
+  expect(offAgain).toEqual(before);
+  await pi.reload([...base, fixture("routed")]);
+  await vi.waitFor(async () => { expect((await pi.known(provider)).chat.every(model => model.baseUrl.startsWith(at.origin))).toBe(true); }, { timeout: 20_000, interval: 100 });
+  same(await pi.known(provider));
+}, 90_000);
+
+it("loses nothing through the generated packages themselves", async () => {
+  const vendors = [...VENDORS, "vercel-ai-gateway"];
+  const before = await Promise.all(vendors.map(plain));
+  const pi = await open({ packages: [fixture("catalogue"), ...vendors.map(name => join(PACKAGES, name))] });
+  for (const [at, provider] of vendors.entries()) expect(counts(await pi.known(provider)), provider).toEqual(counts(before[at]!));
+}, 60_000);
+
+it("is pi's catalogue for all 34 vendors, every field, with the origin and the box's four compat lines the only differences", async () => {
+  const written = readdirSync(PACKAGES).filter(name => name !== "providers" && name !== "typesafe");
+  const baseline = await open({ packages: [fixture("catalogue")] });
+  const pi = await open({ packages: [fixture("catalogue"), ...written.map(name => join(PACKAGES, name))] });
+  for (const provider of written) {
+    const before = await baseline.known(provider);
+    const after = await pi.known(provider);
+    for (const type of ["chat", "image", "classifier"] as const) {
+      const moved = before[type].map(model => {
+        const said = type === "chat" ? SAID[provider]?.compat?.[model.id] : undefined;
+        return { ...model, baseUrl: `http://127.0.0.1:8081/providers/own/${provider}${new URL(model.baseUrl).pathname.replace(/\/$/, "")}`, ...(said === undefined ? {} : { compat: { ...model.compat, ...said } }) };
+      });
+      expect(after[type], `${provider} ${type}`).toEqual(moved);
+    }
+  }
+}, 120_000);
+
+it("holds OpenAI's classifier by name, and says the box's compat of the chat model that shares its id alone", async () => {
+  const at = await listener();
+  const compat = { "gpt-6-luna": { supportsMidConvoEffort: false } };
+  const pi = await open({ packages: [fixture("catalogue"), fixture("routed")], env: routed(at.origin, "openai", { ROUTED_COMPAT: JSON.stringify(compat) }) });
+  const known = await pi.known("openai");
+  expect(known.classifier.map(model => model.id)).toEqual(["gpt-6-luna"]);
+  expect(known.classifier[0]!.compat?.["supportsMidConvoEffort"]).toBeUndefined();
+  expect(known.chat.find(model => model.id === "gpt-6-luna")!.compat?.["supportsMidConvoEffort"]).toBe(false);
+});
+
+it("changes only the origin of every model of every operation, each on its own path", async () => {
+  for (const provider of [...VENDORS, "vercel-ai-gateway"]) {
+    const before = await plain(provider);
+    const at = await listener();
+    const pi = await open({ packages: [fixture("catalogue"), fixture("routed")], env: routed(at.origin, provider) });
+    const after = await pi.known(provider);
+    for (const type of ["chat", "image", "classifier"] as const) {
+      const moved = before[type].map(model => ({ ...model, baseUrl: `${at.origin}/providers/own/${provider}${new URL(model.baseUrl).pathname.replace(/\/$/, "")}` }));
+      expect(after[type], `${provider} ${type}`).toEqual(moved);
+    }
+  }
+}, 120_000);
+
+it("calls an image and a classifier model at the box, on the placeholder, by the path pi gives each", async () => {
+  const at = await listener();
+  const pi = await open({ packages: [fixture("catalogue"), fixture("routed")], env: routed(at.origin, "openrouter") });
+  const known = await pi.known("openrouter");
+  await pi.operate("image", "openrouter", known.image[0]!.id);
+  await pi.operate("classifier", "openrouter", known.classifier[0]!.id);
+  expect(at.hits.length).toBeGreaterThanOrEqual(2);
+  for (const hit of at.hits) {
+    expect(hit.url.startsWith("/providers/own/openrouter/api/v1/"), hit.url).toBe(true);
+    expect(hit.key).toContain("cmx-placeholder-key");
+  }
+}, 60_000);
+
+it("keeps what the settings add to a vendor the package registers a list for", async () => {
+  const at = await listener();
+  const modelsJson = { providers: { openrouter: { models: [{ id: "mine/own", api: "openai-completions", baseUrl: "https://openrouter.ai/api/v1" }] } } };
+  const pi = await open({ packages: [fixture("catalogue"), fixture("routed")], env: routed(at.origin, "openrouter"), modelsJson });
+  const known = await pi.known("openrouter");
+  expect(known.chat.find(model => model.id === "mine/own")!.baseUrl).toBe(`${at.origin}/providers/own/openrouter/api/v1`);
+  expect(known.image.length).toBeGreaterThan(0);
+}, 60_000);
+
+it("starts on a saved model of a listed vendor with no key, at the box from the first call", async () => {
+  const at = await listener();
+  const pi = await open({ packages: [fixture("catalogue"), fixture("routed")], env: routed(at.origin, "openrouter"), settings: { defaultProvider: "openrouter", defaultModel: "anthropic/claude-sonnet-4.5" } });
+  const state = (await pi.ask({ type: "get_state" })).data as { model?: Model };
+  expect(state.model?.provider).toBe("openrouter");
+  expect(state.model?.baseUrl.startsWith(`${at.origin}/providers/own/openrouter/`)).toBe(true);
 }, 60_000);

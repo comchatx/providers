@@ -1,9 +1,10 @@
 import { spawn } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { vi } from "vitest";
 
 export const PACKAGES = resolve("packages");
 export const fixture = (name: string): string => resolve("test/fixtures", name);
@@ -27,19 +28,21 @@ export async function standIn(jev: unknown): Promise<{ readonly origin: string; 
   return { origin: `http://127.0.0.1:${(server.address() as AddressInfo).port}`, hits, close: () => { server.closeAllConnections(); server.close(); } };
 }
 
+export type Known = Readonly<Record<"chat" | "image" | "classifier", readonly Model[]>>;
 export type Model = { readonly id: string; readonly provider: string; readonly api: string; readonly baseUrl: string; readonly compat?: Readonly<Record<string, unknown>> };
-type Options = { readonly packages: readonly unknown[]; readonly env?: Readonly<Record<string, string>> };
+type Options = { readonly packages: readonly unknown[]; readonly env?: Readonly<Record<string, string>>; readonly modelsJson?: unknown; readonly settings?: Readonly<Record<string, unknown>> };
 
 /** A pi of its own, its home a temporary one, in RPC mode. */
-export async function session({ packages, env = {} }: Options) {
+export async function session({ packages, env = {}, modelsJson, settings: extra = {} }: Options) {
   const root = mkdtempSync(join(tmpdir(), "providers-"));
   const agent = join(root, "agent");
   const cwd = join(root, "cwd");
   mkdirSync(agent);
   mkdirSync(cwd);
   const settingsFile = join(agent, "settings.json");
-  const settings = (list: readonly unknown[]): void => writeFileSync(settingsFile, JSON.stringify({ retry: { enabled: false }, quietStartup: true, defaultProjectTrust: "always", packages: list }));
+  const settings = (list: readonly unknown[]): void => writeFileSync(settingsFile, JSON.stringify({ ...extra, retry: { enabled: false }, quietStartup: true, defaultProjectTrust: "always", packages: list }));
   settings(packages);
+  if (modelsJson !== undefined) writeFileSync(join(agent, "models.json"), JSON.stringify(modelsJson));
   const child = spawn(PI, ["--mode", "rpc", "--no-session"], { cwd, env: { PATH: process.env["PATH"] ?? "/usr/bin:/bin", HOME: root, PI_CODING_AGENT_DIR: agent, ...env }, stdio: ["pipe", "pipe", "ignore"] });
   const waiting = new Map<string, (message: { success: boolean; data?: unknown; error?: string }) => void>();
   const events: { type: string }[] = [];
@@ -81,7 +84,19 @@ export async function session({ packages, env = {} }: Options) {
     settings(list);
     await ask({ type: "prompt", message: "/cx-reload" });
   };
-  return { ask, models, paths, say, reload, root, close: async () => {
+  /** What the catalogue fixture read of `provider` from the public registry, every operation. */
+  const known = async (provider: string): Promise<Known> => {
+    const file = join(root, `known-${++asked}.json`);
+    await ask({ type: "prompt", message: `/cx-known ${provider} ${file}` });
+    return vi.waitFor(() => JSON.parse(readFileSync(file, "utf8")) as Known, { timeout: 20_000, interval: 25 });
+  };
+  /** Runs one image or classifier call through pi's registry, by the catalogue fixture. */
+  const operate = async (operation: "image" | "classifier", provider: string, modelId: string): Promise<void> => {
+    const file = join(root, `operated-${++asked}.json`);
+    await ask({ type: "prompt", message: `/cx-operate ${operation} ${provider} ${modelId} ${file}` });
+    await vi.waitFor(() => readFileSync(file), { timeout: 20_000, interval: 25 });
+  };
+  return { ask, models, paths, say, reload, known, operate, root, close: async () => {
     child.kill();
     await new Promise(done => child.once("exit", done));
     rmSync(root, { recursive: true, force: true });
