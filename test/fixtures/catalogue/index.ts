@@ -3,6 +3,17 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 // Reads the public registry as any other extension would, and calls through it. Answers by file: a command's handler has no reply in RPC mode.
 export default function (pi: ExtensionAPI): void {
+  // Loaded ahead of a package, this is the handler that runs before the package's at the session's start.
+  pi.on("session_start", (_event, ctx) => {
+    const provider = process.env["EARLY_PROVIDER"];
+    if (provider === undefined) return;
+    writeFileSync(process.env["EARLY_FILE"]!, JSON.stringify({
+      selected: ctx.model?.id,
+      chat: ctx.modelRegistry.getModelsOfType("chat", provider),
+      image: ctx.modelRegistry.getModelsOfType("image", provider),
+      classifier: ctx.modelRegistry.getModelsOfType("classifier", provider),
+    }));
+  });
   pi.registerCommand("cx-known", {
     description: "Write what the registry knows of a vendor",
     handler: async (args, ctx) => {

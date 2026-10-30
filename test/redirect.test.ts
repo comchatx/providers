@@ -174,6 +174,46 @@ it("keeps what the settings add to a vendor the package registers a list for", a
   expect(known.image.length).toBeGreaterThan(0);
 }, 60_000);
 
+const CUSTOM = { providers: { openrouter: { apiKey: "cmx-placeholder-key", models: [{ id: "review/custom", name: "Custom", api: "openai-completions", baseUrl: "https://openrouter.ai/custom/v9", contextWindow: 1234, maxTokens: 321 }] } } };
+const SAVED = { defaultProvider: "openrouter", defaultModel: "review/custom" };
+
+it("stays on a saved model the settings add, with and without the package", async () => {
+  const control = await open({ packages: [fixture("catalogue")], env: { EARLY_PROVIDER: "openrouter" }, modelsJson: CUSTOM, settings: SAVED });
+  const given = ((await control.ask({ type: "get_state" })).data as { model: Model }).model;
+  expect(given.id).toBe("review/custom");
+  const at = await listener();
+  const pi = await open({ packages: [fixture("catalogue"), fixture("routed")], env: routed(at.origin, "openrouter", { EARLY_PROVIDER: "openrouter" }), modelsJson: CUSTOM, settings: SAVED });
+  const state = ((await pi.ask({ type: "get_state" })).data as { model: Model }).model;
+  expect(state).toEqual({ ...given, baseUrl: `${at.origin}/providers/own/openrouter/custom/v9` });
+}, 60_000);
+
+it("stays on a saved model the settings add when they give no key, on the package's placeholder", async () => {
+  const at = await listener();
+  const { apiKey: _none, ...provider } = CUSTOM.providers.openrouter;
+  const pi = await open({ packages: [fixture("routed")], env: routed(at.origin, "openrouter"), modelsJson: { providers: { openrouter: provider } }, settings: SAVED });
+  const state = ((await pi.ask({ type: "get_state" })).data as { model: Model }).model;
+  expect([state.id, state.baseUrl]).toEqual(["review/custom", `${at.origin}/providers/own/openrouter/custom/v9`]);
+}, 60_000);
+
+it("shows an earlier extension pi's full catalogue and the saved model at the session's start", async () => {
+  const before = await open({ packages: [fixture("catalogue")], env: { EARLY_PROVIDER: "openrouter" }, modelsJson: CUSTOM, settings: SAVED });
+  await before.ask({ type: "get_state" });
+  const at = await listener();
+  const pi = await open({ packages: [fixture("catalogue"), fixture("routed")], env: routed(at.origin, "openrouter", { EARLY_PROVIDER: "openrouter" }), modelsJson: CUSTOM, settings: SAVED });
+  await pi.ask({ type: "get_state" });
+  const [control, seen] = [before.early(), pi.early()];
+  expect(seen.selected).toBe("review/custom");
+  for (const type of ["chat", "image", "classifier"] as const) expect(ids(seen[type]), type).toEqual(ids(control[type]));
+  expect(seen.chat.map(model => model.id)).toContain("review/custom");
+}, 60_000);
+
+it("has the box's compat on a saved model once the session has started", async () => {
+  const at = await listener();
+  const pi = await open({ packages: [fixture("routed")], env: routed(at.origin, "openai", { ROUTED_COMPAT: JSON.stringify({ "gpt-6-sol": { supportsMidConvoEffort: false } }) }), settings: { defaultProvider: "openai", defaultModel: "gpt-6-sol" } });
+  const state = ((await pi.ask({ type: "get_state" })).data as { model: Model }).model;
+  expect(state.compat?.["supportsMidConvoEffort"]).toBe(false);
+}, 60_000);
+
 it("starts on a saved model of a listed vendor with no key, at the box from the first call", async () => {
   const at = await listener();
   const pi = await open({ packages: [fixture("catalogue"), fixture("routed")], env: routed(at.origin, "openrouter"), settings: { defaultProvider: "openrouter", defaultModel: "anthropic/claude-sonnet-4.5" } });

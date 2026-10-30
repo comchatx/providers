@@ -22,8 +22,9 @@ const OPERATIONS: readonly ModelType[] = ["chat", "image", "classifier"];
  * Points `provider` at the box's proxy and takes it away when the session goes: pi keeps a registration through a reload, even one whose
  * package is now off or removed. Only the origin changes, so each model keeps pi's own path. pi's list stays pi's: only a vendor whose models
  * sit on more than one path, or that `compat` touches, registers a list, since pi then takes that list for the vendor's whole catalogue, every
- * operation. It is the running pi's own: its built-in one at load, which pi resolves a starting model and its auth against, and at the session's
- * start what the registry answers, which holds what the settings add.
+ * operation. Handing one at load would take from pi what the settings add before it picks its starting model, so at load the vendor gets its
+ * origin and placeholder alone, and the list comes at the session's start, from what the registry answers. Until then such a vendor's models all
+ * carry its first path, and `compat` is unsaid; pi sends no request in that window, though an extension's own earlier `session_start` handler could.
  */
 export function redirect(pi: ExtensionAPI, provider: string, options: RedirectOptions = {}): void {
   const origin = options.origin ?? BOX_ORIGIN;
@@ -37,7 +38,7 @@ export function redirect(pi: ExtensionAPI, provider: string, options: RedirectOp
   const baseUrl = options.route !== undefined ? `${origin}${options.route}` : listed[0]?.baseUrl ?? at;
   const whole = new Set(listed.map(model => model.baseUrl)).size > 1 || options.compat !== undefined;
   const register = (models?: readonly AnyModel[]): void => pi.registerProvider(provider, { baseUrl, apiKey: PLACEHOLDER_KEY, ...(models === undefined ? {} : { models: models as never }) });
-  register(whole ? listed : undefined);
+  register();
   if (whole) pi.on("session_start", (_event, ctx) => {
     // The registry answers with this package's list until it is gone, and that list's origin is already the box's.
     pi.unregisterProvider(provider);

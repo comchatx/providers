@@ -43,7 +43,7 @@ export async function session({ packages, env = {}, modelsJson, settings: extra 
   const settings = (list: readonly unknown[]): void => writeFileSync(settingsFile, JSON.stringify({ ...extra, retry: { enabled: false }, quietStartup: true, defaultProjectTrust: "always", packages: list }));
   settings(packages);
   if (modelsJson !== undefined) writeFileSync(join(agent, "models.json"), JSON.stringify(modelsJson));
-  const child = spawn(PI, ["--mode", "rpc", "--no-session"], { cwd, env: { PATH: process.env["PATH"] ?? "/usr/bin:/bin", HOME: root, PI_CODING_AGENT_DIR: agent, ...env }, stdio: ["pipe", "pipe", "ignore"] });
+  const child = spawn(PI, ["--mode", "rpc", "--no-session"], { cwd, env: { PATH: process.env["PATH"] ?? "/usr/bin:/bin", HOME: root, PI_CODING_AGENT_DIR: agent, EARLY_FILE: join(root, "early.json"), ...env }, stdio: ["pipe", "pipe", "ignore"] });
   const waiting = new Map<string, (message: { success: boolean; data?: unknown; error?: string }) => void>();
   const events: { type: string }[] = [];
   let buffer = "";
@@ -90,13 +90,15 @@ export async function session({ packages, env = {}, modelsJson, settings: extra 
     await ask({ type: "prompt", message: `/cx-known ${provider} ${file}` });
     return vi.waitFor(() => JSON.parse(readFileSync(file, "utf8")) as Known, { timeout: 20_000, interval: 25 });
   };
+  /** What the catalogue fixture read at the session's start, ahead of a package loaded after it. */
+  const early = (): Known & { readonly selected?: string } => JSON.parse(readFileSync(join(root, "early.json"), "utf8")) as Known & { readonly selected?: string };
   /** Runs one image or classifier call through pi's registry, by the catalogue fixture. */
   const operate = async (operation: "image" | "classifier", provider: string, modelId: string): Promise<void> => {
     const file = join(root, `operated-${++asked}.json`);
     await ask({ type: "prompt", message: `/cx-operate ${operation} ${provider} ${modelId} ${file}` });
     await vi.waitFor(() => readFileSync(file), { timeout: 20_000, interval: 25 });
   };
-  return { ask, models, paths, say, reload, known, operate, root, close: async () => {
+  return { ask, models, paths, say, reload, known, early, operate, root, close: async () => {
     child.kill();
     await new Promise(done => child.once("exit", done));
     rmSync(root, { recursive: true, force: true });
