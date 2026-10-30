@@ -1,0 +1,14 @@
+{
+  "name": "@comchatx/providers",
+  "version": "0.1.0",
+  "description": "The shared core of ComChatX's vendor packages: points a pi provider at the box's loopback model proxy.",
+  "license": "MIT",
+  "author": "ComChatX",
+  "homepage": "https://github.com/comchatx/providers#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/comchatx/providers.git", "directory": "packages/providers" },
+  "bugs": "https://github.com/comchatx/providers/issues",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "files": ["src"],
+  "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
+}

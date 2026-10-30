@@ -1,0 +1,17 @@
+{
+  "name": "@comchatx/groq",
+  "version": "0.1.0",
+  "description": "Groq in pi, through the ComChatX box's model proxy.",
+  "license": "MIT",
+  "author": "ComChatX",
+  "homepage": "https://github.com/comchatx/providers#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/comchatx/providers.git", "directory": "packages/groq" },
+  "bugs": "https://github.com/comchatx/providers/issues",
+  "keywords": ["pi-package"],
+  "type": "module",
+  "pi": { "extensions": ["./extension.ts"] },
+  "files": ["extension.ts"],
+  "comchatx": {"name":"Groq","section":"models","provider":"groq"},
+  "dependencies": { "@comchatx/providers": "^0.1.0" },
+  "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
+}

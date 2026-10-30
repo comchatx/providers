@@ -1,0 +1,17 @@
+{
+  "name": "@comchatx/xai",
+  "version": "0.1.0",
+  "description": "xAI in pi, through the ComChatX box's model proxy.",
+  "license": "MIT",
+  "author": "ComChatX",
+  "homepage": "https://github.com/comchatx/providers#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/comchatx/providers.git", "directory": "packages/xai" },
+  "bugs": "https://github.com/comchatx/providers/issues",
+  "keywords": ["pi-package"],
+  "type": "module",
+  "pi": { "extensions": ["./extension.ts"] },
+  "files": ["extension.ts"],
+  "comchatx": {"name":"xAI","section":"models","provider":"xai"},
+  "dependencies": { "@comchatx/providers": "^0.1.0" },
+  "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
+}

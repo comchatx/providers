@@ -1,0 +1,17 @@
+{
+  "name": "@comchatx/opencode-go",
+  "version": "0.1.0",
+  "description": "OpenCode Go in pi, through the ComChatX box's model proxy.",
+  "license": "MIT",
+  "author": "ComChatX",
+  "homepage": "https://github.com/comchatx/providers#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/comchatx/providers.git", "directory": "packages/opencode-go" },
+  "bugs": "https://github.com/comchatx/providers/issues",
+  "keywords": ["pi-package"],
+  "type": "module",
+  "pi": { "extensions": ["./extension.ts"] },
+  "files": ["extension.ts"],
+  "comchatx": {"name":"OpenCode Go","section":"models","provider":"opencode-go"},
+  "dependencies": { "@comchatx/providers": "^0.1.0" },
+  "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
+}
