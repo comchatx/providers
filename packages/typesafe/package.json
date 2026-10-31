@@ -11,7 +11,7 @@
   "type": "module",
   "exports": { ".": "./src/index.ts" },
   "pi": { "extensions": ["./extension.ts"] },
-  "files": ["extension.ts", "src"],
+  "files": ["extension.ts", "src", "LICENSE"],
   "comchatx": { "name": "TypeSafe", "section": "models", "provider": "typesafe" },
   "dependencies": { "@comchatx/providers": "^0.1.0" },
   "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }

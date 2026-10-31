@@ -1,0 +1,64 @@
+name: Publish bootstrap
+
+# The first publish of every package, which npm trusted publishing cannot do: it needs a package that already exists.
+# Pressed by hand under Actions, and removed once `npm trust` is set up, after which release.yml alone publishes.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+      # As release.yml.
+      - run: npm install -g npm@11
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - name: The packages are what the generator writes
+        run: |
+          npm run generate
+          git add --all
+          git diff --cached --exit-code
+      - name: Publish each package not yet on npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          published=""
+          skipped=""
+          current=""
+          report() {
+            {
+              echo "### Publish bootstrap"
+              echo "- Published:${published:- none}"
+              echo "- Skipped, already on npm:${skipped:- none}"
+              echo "- Failed: ${current:-none}"
+            } >> "$GITHUB_STEP_SUMMARY"
+          }
+          trap report EXIT
+          view_error="$(mktemp)"
+          # The core first, since every other package depends on it.
+          for dir in packages/providers $(ls -d packages/* | grep -vx packages/providers); do
+            current="$(node -p "require('./$dir/package.json').name")"
+            version="$(node -p "require('./$dir/package.json').version")"
+            # npm's code alone says "no such package": a message may say anything. Any other failure is not a package to publish.
+            if found="$(npm view "$current@$version" version 2>"$view_error")"; then :; elif [ "$(sed -n 's/^npm error code //p' "$view_error" | head -n 1)" = E404 ]; then found=""; else cat "$view_error"; exit 1; fi
+            if [ -n "$found" ]; then
+              echo "skipped $current@$version: already on npm"
+              skipped="$skipped $current"
+            else
+              npm publish --access public --provenance --workspace "$dir"
+              echo "published $current@$version"
+              published="$published $current"
+            fi
+            current=""
+          done

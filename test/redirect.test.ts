@@ -214,6 +214,15 @@ it("has the box's compat on a saved model once the session has started", async (
   expect(state.compat?.["supportsMidConvoEffort"]).toBe(false);
 }, 60_000);
 
+it("shows an earlier extension a listed vendor's model at the vendor's first path until the session's start, then at its own", async () => {
+  const at = await listener();
+  const pi = await open({ packages: [fixture("catalogue"), fixture("routed")], env: routed(at.origin, "openrouter", { EARLY_PROVIDER: "openrouter" }) });
+  const own = (await pi.known("openrouter")).chat.find(model => model.baseUrl.endsWith("/api/v1"))!;
+  expect(own.baseUrl).toBe(`${at.origin}/providers/own/openrouter/api/v1`);
+  expect(pi.early().chat.find(model => model.id === own.id)!.baseUrl).toBe(`${at.origin}/providers/own/openrouter/api`);
+}, 60_000);
+
+// The negative this holds: no registration at load for a listed vendor.
 it("starts on a saved model of a listed vendor with no key, at the box from the first call", async () => {
   const at = await listener();
   const pi = await open({ packages: [fixture("catalogue"), fixture("routed")], env: routed(at.origin, "openrouter"), settings: { defaultProvider: "openrouter", defaultModel: "anthropic/claude-sonnet-4.5" } });
