@@ -24,7 +24,9 @@ Radius has no package: its models are the organisation's, from the gateway per s
 
 ## After the first publish
 
-Paste this once into a terminal signed in to npm with the account that owns `@comchatx`. npm asks for 2FA on the first package and skips it for the next 5 minutes, which is what the 2-second delay fits inside. It says each package trusts `release.yml` on this repository.
+This needs npm 11.15 or later: check with `npm --version`, and upgrade with `npm install -g npm@latest`.
+
+Paste this once into a terminal signed in to npm with the account that owns `@comchatx`. At the first package npm asks for 2FA: enable the website's option to skip 2FA for the next 5 minutes, or it will ask again for each package. The loop says each package trusts `release.yml` on this repository, and it stops at the first failure, naming the package.
 
 ```sh
 for name in \
@@ -65,7 +67,7 @@ for name in \
   @comchatx/zai \
   @comchatx/zai-coding-cn
 do
-  npm trust github "$name" --file release.yml --repo comchatx/providers --yes
+  npm trust github "$name" --file release.yml --repo comchatx/providers --allow-publish --yes || { echo "failed: $name"; break; }
   sleep 2
 done
 ```

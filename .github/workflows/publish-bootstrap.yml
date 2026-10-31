@@ -45,12 +45,13 @@ jobs:
             } >> "$GITHUB_STEP_SUMMARY"
           }
           trap report EXIT
+          view_error="$(mktemp)"
           # The core first, since every other package depends on it.
           for dir in packages/providers $(ls -d packages/* | grep -vx packages/providers); do
             current="$(node -p "require('./$dir/package.json').name")"
             version="$(node -p "require('./$dir/package.json').version")"
-            # An error other than "no such package" is a failure, not a package to publish.
-            if found="$(npm view "$current@$version" version 2>view-error.log)"; then :; elif grep -q E404 view-error.log; then found=""; else cat view-error.log; exit 1; fi
+            # npm's code alone says "no such package": a message may say anything. Any other failure is not a package to publish.
+            if found="$(npm view "$current@$version" version 2>"$view_error")"; then :; elif [ "$(sed -n 's/^npm error code //p' "$view_error" | head -n 1)" = E404 ]; then found=""; else cat "$view_error"; exit 1; fi
             if [ -n "$found" ]; then
               echo "skipped $current@$version: already on npm"
               skipped="$skipped $current"
