@@ -1,0 +1,18 @@
+{
+  "name": "@comchatx/typesafe",
+  "version": "0.1.0",
+  "description": "TypeSafe in pi, through the ComChatX box's model proxy, with the client for its classifier, Jev.",
+  "license": "MIT",
+  "author": "ComChatX",
+  "homepage": "https://github.com/comchatx/providers#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/comchatx/providers.git", "directory": "packages/typesafe" },
+  "bugs": "https://github.com/comchatx/providers/issues",
+  "keywords": ["pi-package"],
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "pi": { "extensions": ["./extension.ts"] },
+  "files": ["extension.ts", "src"],
+  "comchatx": { "name": "TypeSafe", "section": "models", "provider": "typesafe" },
+  "dependencies": { "@comchatx/providers": "^0.1.0" },
+  "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@comchatx/xiaomi-token-plan-ams",
+  "version": "0.1.0",
+  "description": "Xiaomi Token Plan AMS in pi, through the ComChatX box's model proxy.",
+  "license": "MIT",
+  "author": "ComChatX",
+  "homepage": "https://github.com/comchatx/providers#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/comchatx/providers.git", "directory": "packages/xiaomi-token-plan-ams" },
+  "bugs": "https://github.com/comchatx/providers/issues",
+  "keywords": ["pi-package"],
+  "type": "module",
+  "pi": { "extensions": ["./extension.ts"] },
+  "files": ["extension.ts"],
+  "comchatx": {"name":"Xiaomi Token Plan AMS","section":"models","provider":"xiaomi-token-plan-ams"},
+  "dependencies": { "@comchatx/providers": "^0.1.0" },
+  "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
+}

@@ -1,0 +1,37 @@
+name: Release
+
+# Publishes one package by npm trusted publishing: no token is stored, npm trusts this workflow on this repository.
+# It works only once the package exists on npm (a maintainer's first manual publish) and this workflow is its trusted publisher.
+# The tag names the package and its version: @comchatx/anthropic@0.1.0.
+on:
+  push:
+    tags: ["@comchatx/*@*"]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+      # Trusted publishing needs npm 11.5.1 or later.
+      - run: npm install -g npm@11
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - name: The tag names the package and the version being published
+        run: |
+          name="${TAG%@*}"
+          dir="packages/${name#@comchatx/}"
+          test "$name@$(node -p "require('./$dir/package.json').version")" = "$TAG"
+          test "$(node -p "require('./$dir/package.json').name")" = "$name"
+          echo "PACKAGE_DIR=$dir" >> "$GITHUB_ENV"
+      - run: npm publish --provenance --access public --workspace "$PACKAGE_DIR"
