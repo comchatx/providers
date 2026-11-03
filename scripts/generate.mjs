@@ -12,6 +12,7 @@ const WRITTEN = new Set(["providers", "typesafe"]);
 export async function packages(root = ROOT) {
   const manifest = await readFile(join(root, "template/package.json"), "utf8");
   const extension = await readFile(join(root, "template/extension.ts"), "utf8");
+  const license = await readFile(join(root, "LICENSE"), "utf8");
   return builtinProviders().filter(({ id }) => !Object.hasOwn(NOT_GENERATED, id)).sort((a, b) => a.id.localeCompare(b.id)).map(({ id, name }) => {
     const said = SAID[id] ?? {};
     const fill = (text, values) => Object.entries(values).reduce((out, [key, value]) => out.replaceAll(`{{${key}}}`, value), text);
@@ -19,6 +20,7 @@ export async function packages(root = ROOT) {
     return { provider: id, files: {
       "package.json": fill(manifest, { provider: id, name, comchatx }),
       "extension.ts": fill(extension, { provider: id, options: said.compat === undefined ? "" : `, { compat: ${JSON.stringify(said.compat)} }` }),
+      LICENSE: license,
     } };
   });
 }
@@ -32,6 +34,8 @@ export async function generate(root = ROOT) {
     await mkdir(join(root, "packages", provider), { recursive: true });
     for (const [name, text] of Object.entries(files)) await writeFile(join(root, "packages", provider, name), text);
   }
+  // npm packs a workspace on its own, so the root's notice does not reach a tarball.
+  for (const dir of WRITTEN) await writeFile(join(root, "packages", dir, "LICENSE"), await readFile(join(root, "LICENSE"), "utf8"));
   return made;
 }
 

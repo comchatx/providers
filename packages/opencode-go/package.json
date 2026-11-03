@@ -10,7 +10,7 @@
   "keywords": ["pi-package"],
   "type": "module",
   "pi": { "extensions": ["./extension.ts"] },
-  "files": ["extension.ts"],
+  "files": ["extension.ts", "LICENSE"],
   "comchatx": {"name":"OpenCode Go","section":"models","provider":"opencode-go"},
   "dependencies": { "@comchatx/providers": "^0.1.0" },
   "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }

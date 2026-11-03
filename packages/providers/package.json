@@ -9,6 +9,6 @@
   "bugs": "https://github.com/comchatx/providers/issues",
   "type": "module",
   "exports": { ".": "./src/index.ts" },
-  "files": ["src"],
-  "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
+  "files": ["src", "LICENSE"],
+  "peerDependencies": { "@earendil-works/pi-ai": "*", "@earendil-works/pi-coding-agent": "*" }
 }
