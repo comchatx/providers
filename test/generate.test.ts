@@ -39,3 +39,9 @@ it("marks OpenRouter alone as a host whose model ids name their maker", async ()
   const marked = (await packages()).filter(one => JSON.parse(one.files["package.json"]).comchatx.aggregator === true).map(one => one.provider);
   expect(marked).toEqual(["openrouter"]);
 });
+
+it("lists no package in pi's gallery: the template and the hand-written packages carry no keywords", () => {
+  // The template is JSON only once the generator fills its placeholders, so it is read as text.
+  expect(readFileSync("template/package.json", "utf8").includes('"keywords"')).toBe(false);
+  for (const path of ["packages/typesafe/package.json", "packages/providers/package.json"]) expect(Object.hasOwn(JSON.parse(readFileSync(path, "utf8")), "keywords"), path).toBe(false);
+});
