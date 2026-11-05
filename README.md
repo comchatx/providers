@@ -20,4 +20,4 @@ Radius has no package: its models are the organisation's, from the gateway per s
 
 ## Publishing
 
-Packages are published by `release.yml` through npm trusted publishing, configured on 2026-11-02: one package on a tag naming it and its version, `@comchatx/anthropic@0.1.0`.
+Packages are published by `release.yml` through npm trusted publishing, configured on 2026-11-02: one package on a tag naming its directory under `packages/` and its version, joined by `-`: `anthropic-0.1.0`, `xiaomi-token-plan-sgp-0.1.1`. The package is published from its own directory.
