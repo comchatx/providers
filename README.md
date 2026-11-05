@@ -8,6 +8,7 @@ A manifest and one call. Its extension calls `redirect` from `@comchatx/provider
 
 - pi's models stay pi's. Each keeps its own path, and a vendor whose models sit on more than one path registers pi's own list with those paths.
 - Turning a package off or removing it takes the vendor away at the next reload.
+- No package carries the `pi-package` keyword, so none is listed in pi's gallery or on ComChatX's Plugins page: a seller adds a vendor by its key or sign-in on its maker card, and ComChatX installs the package by name.
 
 `@comchatx/typesafe` is the one written by hand: it also holds `askJev`, the client for TypeSafe's classifier, for other packages to depend on.
 
