@@ -2,10 +2,10 @@ name: Release
 
 # Publishes one package by npm trusted publishing: no token is stored, npm trusts this workflow on this repository.
 # It works only once the package exists on npm (a maintainer's first manual publish) and this workflow is its trusted publisher.
-# The tag names the package and its version: @comchatx/anthropic@0.1.0.
+# The tag names the package and its version, joined by its last `-`: anthropic-0.1.0, xiaomi-token-plan-sgp-0.1.1.
 on:
   push:
-    tags: ["@comchatx/*@*"]
+    tags: ["*-[0-9]*"]
 
 permissions:
   contents: read
@@ -29,9 +29,13 @@ jobs:
       - run: npm test
       - name: The tag names the package and the version being published
         run: |
-          name="${TAG%@*}"
-          dir="packages/${name#@comchatx/}"
-          test "$name@$(node -p "require('./$dir/package.json').version")" = "$TAG"
-          test "$(node -p "require('./$dir/package.json').name")" = "$name"
+          name="${TAG%-*}"
+          version="${TAG##*-}"
+          dir="packages/$name"
+          test "$(node -p "require('./$dir/package.json').version")" = "$version"
+          test "$(node -p "require('./$dir/package.json').name")" = "@comchatx/$name"
           echo "PACKAGE_DIR=$dir" >> "$GITHUB_ENV"
-      - run: npm publish --provenance --access public --workspace "$PACKAGE_DIR"
+      # From the package's own directory, as a repository of one package publishes. Run there, npm finds the root above and publishes
+      # the package as a workspace of it, as `--workspace` does, unless workspaces are off.
+      - run: npm publish --provenance --access public --workspaces=false --loglevel verbose
+        working-directory: ${{ env.PACKAGE_DIR }}
