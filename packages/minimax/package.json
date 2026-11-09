@@ -1,6 +1,6 @@
 {
   "name": "@comchatx/minimax",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "MiniMax in pi, through the ComChatX box's model proxy.",
   "license": "MIT",
   "author": "ComChatX",
@@ -10,7 +10,7 @@
   "type": "module",
   "pi": { "extensions": ["./extension.ts"] },
   "files": ["extension.ts", "LICENSE"],
-  "comchatx": {"name":"MiniMax","section":"models","provider":"minimax"},
+  "comchatx": {"name":"MiniMax","section":"models","provider":"minimax","card":{"vendor":"MiniMax","description":{"en":"MiniMax M3 is MiniMax's open-weights model.\n\nA lower-cost option for short questions and summaries.","zh":"MiniMax M3 是 MiniMax 的开放权重模型。\n\n适合简短提问和摘要，价格较低。"}},"mark":{"logo":"minimax"},"aliases":["稀宇"]},
   "dependencies": { "@comchatx/providers": "^0.1.0" },
   "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
 }

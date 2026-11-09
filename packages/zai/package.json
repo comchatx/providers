@@ -1,6 +1,6 @@
 {
   "name": "@comchatx/zai",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Z.AI in pi, through the ComChatX box's model proxy.",
   "license": "MIT",
   "author": "ComChatX",
@@ -10,7 +10,7 @@
   "type": "module",
   "pi": { "extensions": ["./extension.ts"] },
   "files": ["extension.ts", "LICENSE"],
-  "comchatx": {"name":"Z.AI","section":"models","provider":"zai"},
+  "comchatx": {"name":"Z.AI","section":"models","provider":"zai","card":{"name":"GLM","vendor":"Z.ai","description":{"en":"GLM-5 is Z.ai's open-weights model for Chinese-language and coding tasks.\n\nSuitable for product listings and customer messages on Chinese-language marketplaces.","zh":"GLM-5 是 Z.ai 的开放权重模型，适合中文和编程任务。\n\n适合中文电商平台的商品信息和客户消息。"}},"mark":{"logo":"zai"},"aliases":["智谱"]},
   "dependencies": { "@comchatx/providers": "^0.1.0" },
   "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@comchatx/vercel-ai-gateway",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Vercel AI Gateway in pi, through the ComChatX box's model proxy.",
   "license": "MIT",
   "author": "ComChatX",
@@ -10,7 +10,7 @@
   "type": "module",
   "pi": { "extensions": ["./extension.ts"] },
   "files": ["extension.ts", "LICENSE"],
-  "comchatx": {"name":"Vercel AI Gateway","section":"models","provider":"vercel-ai-gateway"},
+  "comchatx": {"name":"Vercel AI Gateway","section":"models","provider":"vercel-ai-gateway","mark":{"logo":"vercel"}},
   "dependencies": { "@comchatx/providers": "^0.1.0" },
   "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
 }

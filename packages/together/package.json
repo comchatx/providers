@@ -1,6 +1,6 @@
 {
   "name": "@comchatx/together",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Together in pi, through the ComChatX box's model proxy.",
   "license": "MIT",
   "author": "ComChatX",
@@ -10,7 +10,7 @@
   "type": "module",
   "pi": { "extensions": ["./extension.ts"] },
   "files": ["extension.ts", "LICENSE"],
-  "comchatx": {"name":"Together","section":"models","provider":"together"},
+  "comchatx": {"name":"Together","section":"models","provider":"together","mark":{"logo":"together"}},
   "dependencies": { "@comchatx/providers": "^0.1.0" },
   "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
 }

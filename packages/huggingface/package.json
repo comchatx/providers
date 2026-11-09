@@ -1,6 +1,6 @@
 {
   "name": "@comchatx/huggingface",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Hugging Face in pi, through the ComChatX box's model proxy.",
   "license": "MIT",
   "author": "ComChatX",
@@ -10,7 +10,7 @@
   "type": "module",
   "pi": { "extensions": ["./extension.ts"] },
   "files": ["extension.ts", "LICENSE"],
-  "comchatx": {"name":"Hugging Face","section":"models","provider":"huggingface"},
+  "comchatx": {"name":"Hugging Face","section":"models","provider":"huggingface","mark":{"logo":"huggingface"}},
   "dependencies": { "@comchatx/providers": "^0.1.0" },
   "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
 }

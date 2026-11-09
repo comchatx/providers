@@ -1,6 +1,6 @@
 {
   "name": "@comchatx/{{provider}}",
-  "version": "0.1.1",
+  "version": "{{version}}",
   "description": "{{name}} in pi, through the ComChatX box's model proxy.",
   "license": "MIT",
   "author": "ComChatX",

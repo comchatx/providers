@@ -1,6 +1,6 @@
 {
   "name": "@comchatx/moonshotai",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Moonshot AI in pi, through the ComChatX box's model proxy.",
   "license": "MIT",
   "author": "ComChatX",
@@ -10,7 +10,7 @@
   "type": "module",
   "pi": { "extensions": ["./extension.ts"] },
   "files": ["extension.ts", "LICENSE"],
-  "comchatx": {"name":"Moonshot AI","section":"models","provider":"moonshotai"},
+  "comchatx": {"name":"Moonshot AI","section":"models","provider":"moonshotai","card":{"name":"Kimi","vendor":"Moonshot AI","keyName":"Moonshot","description":{"en":"Kimi K3 is Moonshot AI's open-weights model for long documents and work that takes many steps.\n\nSuitable for long Chinese or English documents and tasks that take several steps in sequence.","zh":"Kimi K3 是 Moonshot AI 的开放权重模型，适合处理长文档和需要很多步骤的工作。\n\n适合处理中英文长文档，以及需要连续完成多个步骤的任务。"}},"mark":{"logo":"moonshot"},"aliases":["月之暗面"],"plans":["Kimi Code"]},
   "dependencies": { "@comchatx/providers": "^0.1.0" },
   "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
 }
