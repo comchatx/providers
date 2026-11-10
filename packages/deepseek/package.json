@@ -1,6 +1,6 @@
 {
   "name": "@comchatx/deepseek",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "DeepSeek in pi, through the ComChatX box's model proxy.",
   "license": "MIT",
   "author": "ComChatX",
@@ -10,7 +10,7 @@
   "type": "module",
   "pi": { "extensions": ["./extension.ts"] },
   "files": ["extension.ts", "LICENSE"],
-  "comchatx": {"name":"DeepSeek","section":"models","provider":"deepseek"},
+  "comchatx": {"name":"DeepSeek","section":"models","provider":"deepseek","card":{"vendor":"DeepSeek","description":{"en":"DeepSeek V4 is an open-weights model from DeepSeek with lower pricing than flagship models.\n\nA lower-cost option for bulk work when response time is less important.","zh":"DeepSeek V4 是 DeepSeek 的开放权重模型，价格低于旗舰模型。\n\n适合对速度要求不高、需要控制成本的批量任务。"}},"mark":{"logo":"deepseek"},"aliases":["深度求索"]},
   "dependencies": { "@comchatx/providers": "^0.1.0" },
   "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
 }

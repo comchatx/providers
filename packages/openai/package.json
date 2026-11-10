@@ -1,6 +1,6 @@
 {
   "name": "@comchatx/openai",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "OpenAI in pi, through the ComChatX box's model proxy.",
   "license": "MIT",
   "author": "ComChatX",
@@ -10,7 +10,7 @@
   "type": "module",
   "pi": { "extensions": ["./extension.ts"] },
   "files": ["extension.ts", "LICENSE"],
-  "comchatx": {"name":"OpenAI","section":"models","provider":"openai"},
+  "comchatx": {"name":"OpenAI","section":"models","provider":"openai","card":{"name":"GPT","vendor":"OpenAI","description":{"en":"GPT is OpenAI's model family. GPT-6 Sol is designed for reasoning over long documents and tables, while GPT-6 Luna prioritises speed and lower cost. Both can read images and files.\n\nChoose Sol for long reports and multi-step instructions. Choose Luna for everyday questions and summaries.","zh":"GPT 是 OpenAI 的模型系列。GPT-6 Sol 适合分析长文档和表格；GPT-6 Luna 响应更快、价格更低。两者都能读取图片和文件。\n\n长报告和多步骤任务可选 Sol；日常提问和摘要可选 Luna。"}},"mark":{"logo":"openai"},"aliases":["ChatGPT"],"plans":["ChatGPT"]},
   "dependencies": { "@comchatx/providers": "^0.1.0" },
   "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
 }

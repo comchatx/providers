@@ -1,6 +1,6 @@
 {
   "name": "@comchatx/github-copilot",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "GitHub Copilot in pi, through the ComChatX box's model proxy.",
   "license": "MIT",
   "author": "ComChatX",
@@ -10,7 +10,7 @@
   "type": "module",
   "pi": { "extensions": ["./extension.ts"] },
   "files": ["extension.ts", "LICENSE"],
-  "comchatx": {"name":"GitHub Copilot","section":"models","provider":"github-copilot"},
+  "comchatx": {"name":"GitHub Copilot","section":"models","provider":"github-copilot","mark":{"logo":"githubcopilot"},"plans":["GitHub Copilot"]},
   "dependencies": { "@comchatx/providers": "^0.1.0" },
   "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
 }

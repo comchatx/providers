@@ -2,7 +2,7 @@ import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { builtinProviders } from "@earendil-works/pi-ai/providers/all";
-import { NOT_GENERATED, SAID } from "./vendors.mjs";
+import { NOT_GENERATED, SAID, VERSION } from "./vendors.mjs";
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 /** The hand-written packages under `packages/`, which the generator leaves alone. */
@@ -18,7 +18,7 @@ export async function packages(root = ROOT) {
     const fill = (text, values) => Object.entries(values).reduce((out, [key, value]) => out.replaceAll(`{{${key}}}`, value), text);
     const comchatx = JSON.stringify({ name, section: "models", provider: id, ...said.comchatx });
     return { provider: id, files: {
-      "package.json": fill(manifest, { provider: id, name, comchatx }),
+      "package.json": fill(manifest, { provider: id, name, comchatx, version: said.version ?? VERSION }),
       "extension.ts": fill(extension, { provider: id, options: said.compat === undefined ? "" : `, { compat: ${JSON.stringify(said.compat)} }` }),
       LICENSE: license,
     } };

@@ -1,6 +1,6 @@
 {
   "name": "@comchatx/anthropic",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Anthropic in pi, through the ComChatX box's model proxy.",
   "license": "MIT",
   "author": "ComChatX",
@@ -10,7 +10,7 @@
   "type": "module",
   "pi": { "extensions": ["./extension.ts"] },
   "files": ["extension.ts", "LICENSE"],
-  "comchatx": {"name":"Anthropic","section":"models","provider":"anthropic"},
+  "comchatx": {"name":"Anthropic","section":"models","provider":"anthropic","card":{"name":"Claude","vendor":"Anthropic","description":{"en":"Claude is Anthropic's model family. Opus 5.5 is intended for demanding work, Sonnet 5 balances capability and cost, and Haiku 4.5 prioritises speed and lower cost. All three can read images and files.\n\nSuitable for long analyses, detailed instructions and work where accuracy matters more than model cost.","zh":"Claude 是 Anthropic 的模型系列。Opus 5.5 适合要求较高的任务；Sonnet 5 兼顾能力和价格；Haiku 4.5 响应更快、价格更低。三者都能读取图片和文件。\n\n适合长篇分析、详细指令，以及准确性比模型费用更重要的任务。"}},"mark":{"logo":"anthropic"},"plans":["Claude"]},
   "dependencies": { "@comchatx/providers": "^0.1.0" },
   "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
 }
