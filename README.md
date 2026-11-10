@@ -31,14 +31,24 @@ Packages are published by `release.yml` through npm trusted publishing, configur
 
 A package npm has never held cannot come through `release.yml`: trusted publishing is set on a package that exists. Its first version goes out by `publish-bootstrap.yml`, pressed by hand under Actions with the `NPM_TOKEN` secret, which publishes every package not yet on npm at its version and skips the rest; then the trust loop below.
 
+`NPM_TOKEN` publishes only if it is a granular access token, on npmjs.com under Access Tokens, that has all three of:
+
+- **Packages and scopes**: **Read and write (publish and stage)**, for the scope `@comchatx`;
+- **Expiration**: a date still ahead;
+- **Bypass two-factor authentication**: checked. npm leaves it unchecked by default, and without it a publish from the workflow asks for a second factor nobody can give.
+
+If any of the three is not so, or cannot be read, make a fresh one with exactly those three, **Organizations** left at **No access**, and the shortest expiry that covers the run, and put it in with `gh secret set NPM_TOKEN --repo comchatx/providers`.
+
 ### A new card
 
-A card the product gains with no provider's package costs:
+A card the product gains with no provider's package costs, as the tests stand today:
 
-1. `npm run copy-cards -- <path to the comchatx checkout>`, then a line for it in `CARD_SAID` (`scripts/vendors.mjs`) with its words where it has any, then `npm run generate`, in a pull request here. The product names the card in `src/shared/maker-cards.json`'s `packaged`, whose test fails until it does.
-2. Jack's steps: the merge sentence; a press of Run workflow on `publish-bootstrap.yml`, with a granular `NPM_TOKEN` that still stands; and its `npm trust` line, as the loop below writes it, for that one package.
+1. **Here, a pull request.** `npm run copy-cards -- <path to the comchatx checkout>` from a checkout of the product's `main`, then `npm run generate`. The trust loop below gains the package's name. Tests then fail until they are changed in the same pull request: the count of 27 card packages in `test/generate.test.ts`, `test/redirect.test.ts` and `test/publish.test.ts`, the count of 63 tarballs in `test/publish.test.ts`, and, where the card has words, the equality of `CARD_SAID` with `test/fixtures/maker-cards.json`. That fixture is the product's file as the 18 cards' words left it; a new card's words are signed apart, so the test changes to hold the 18 as they were and the new card beside them, never the fixture rewritten as if the product had held them.
+2. **The product, a pull request.** The card joins `src/shared/maker-cards.json`'s `packaged`, whose test fails until it does, and `provider-packages.test.ts`'s count of 27 moves with it.
+3. **Here, the bootstrap back.** `publish-bootstrap.yml` is removed once the 27 are trusted, so a new card's first version needs it restored by a reviewed pull request and removed again after.
+4. **Jack's steps.** The merge sentences; the token check above; a press of Run workflow on `publish-bootstrap.yml`; and that one package's `npm trust` line, as the loop below writes it.
 
-Its later versions go out by a tag, as every package's do.
+Nothing checks that the two repositories agree: each repository's tests hold its own copy, so a card can be named in the product and never published here, or published and never trusted, while both test runs pass. Its later versions go out by a tag, as every package's do.
 
 ## After the first publish
 
