@@ -1,7 +1,7 @@
 name: Publish bootstrap
 
 # The first publish of every package, which npm trusted publishing cannot do: it needs a package that already exists.
-# Pressed by hand under Actions, and removed once `npm trust` is set up, after which release.yml alone publishes.
+# Pressed by hand under Actions with NPM_TOKEN; it stays, for a new package's first version. Later versions go out by release.yml.
 on:
   workflow_dispatch:
 

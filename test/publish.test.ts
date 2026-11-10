@@ -11,7 +11,7 @@ const scratch = (): string => { const dir = mkdtempSync(join(tmpdir(), "provider
 const npm = (cwd: string, ...args: readonly string[]): string => execFileSync("npm", [...args], { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
 const pack = (into: string): readonly { readonly name: string; readonly filename: string; readonly files: readonly { readonly path: string }[] }[] => JSON.parse(npm(".", "pack", "--workspaces", "--offline", "--ignore-scripts", "--json", "--pack-destination", into));
 const NAMES = readdirSync("packages").map(name => `@comchatx/${name}`).sort();
-/** The packages npm has never held, which the bootstrap publishes and the trust loop then trusts: the cards' own. */
+/** The packages npm has never held, which the bootstrap publishes, each trusted at its first tag: the cards' own. */
 const FIRST = NAMES.filter(name => name.startsWith("@comchatx/card-"));
 const WORKFLOW = readFileSync(".github/workflows/publish-bootstrap.yml", "utf8");
 
@@ -52,7 +52,7 @@ it("runs the bootstrap at a person's press alone, and leaves the token to npm", 
 });
 
 it("lists every card's package in the trust loop, and no package npm already trusts, on the file name npm takes", () => {
-  const section = readFileSync("README.md", "utf8").split("## After the first publish")[1]!.split("\n## ")[0]!;
+  const section = readFileSync("README.md", "utf8").split("## Trust, at a package's first tag")[1]!.split("\n## ")[0]!;
   expect([...section.matchAll(/^ {2}(@comchatx\/[a-z0-9-]+)/gm)].map(match => match[1]).sort()).toEqual(FIRST);
   expect(FIRST).toHaveLength(27);
   expect(section).toContain("npm 11.15 or later");
