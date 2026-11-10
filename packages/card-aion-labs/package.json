@@ -1,0 +1,14 @@
+{
+  "name": "@comchatx/card-aion-labs",
+  "version": "0.1.0",
+  "description": "The AionLabs card on ComChatX's Plugins page: its words and mark. It adds nothing to pi.",
+  "license": "MIT",
+  "author": "ComChatX",
+  "homepage": "https://github.com/comchatx/providers#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/comchatx/providers.git", "directory": "packages/card-aion-labs" },
+  "bugs": "https://github.com/comchatx/providers/issues",
+  "type": "module",
+  "pi": {},
+  "files": ["LICENSE"],
+  "comchatx": {"name":"AionLabs","section":"models","cardId":"aion-labs","mark":{"logo":"aionlabs"}}
+}

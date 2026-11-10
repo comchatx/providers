@@ -47,3 +47,32 @@ export const SAID = Object.freeze({
   "xiaomi": { version: "0.1.2", comchatx: {"card": {"name": "MiMo", "vendor": "Xiaomi", "vendorZh": "小米"}, "mark": {"logo": "xiaomimimo"}, "aliases": ["小米"]} },
   "zai": { version: "0.1.2", comchatx: {"card": {"name": "GLM", "vendor": "Z.ai", "description": {"en": "GLM-5 is Z.ai's open-weights model for Chinese-language and coding tasks.\n\nSuitable for product listings and customer messages on Chinese-language marketplaces.", "zh": "GLM-5 是 Z.ai 的开放权重模型，适合中文和编程任务。\n\n适合中文电商平台的商品信息和客户消息。"}}, "mark": {"logo": "zai"}, "aliases": ["智谱"]} },
 });
+
+/** The version of a card's package that no entry below moves on. */
+export const CARD_VERSION = "0.1.0";
+
+/**
+ * What a card's own package carries in its `comchatx` field beside its name, for the cards `cards.json` names: their mark, card words
+ * and search words, moved as the product's `maker-cards.json` held them (`test/fixtures/maker-cards.json`), and the version of each moved past
+ * `CARD_VERSION`. A card with no entry carries its name alone.
+ */
+export const CARD_SAID = Object.freeze({
+  "aion-labs": { comchatx: {"mark": {"logo": "aionlabs"}} },
+  "amazon": { comchatx: {"mark": {"logo": "nova"}, "aliases": ["亚马逊"]} },
+  "bytedance-seed": { comchatx: {"mark": {"logo": "bytedance"}, "aliases": ["字节", "豆包"]} },
+  "cohere": { comchatx: {"mark": {"logo": "cohere"}} },
+  "dots-studio": { comchatx: {"mark": {"logo": "dotsstudio"}} },
+  "fireworks": { comchatx: {"mark": {"logo": "fireworks"}} },
+  "ibm-granite": { comchatx: {"mark": {"logo": "ibm"}} },
+  "inception": { comchatx: {"mark": {"logo": "inception"}} },
+  "liquid": { comchatx: {"mark": {"logo": "liquid"}} },
+  "meituan": { comchatx: {"mark": {"logo": "longcat"}, "aliases": ["美团"]} },
+  "nvidia": { comchatx: {"card": {"name": "Nemotron"}, "mark": {"logo": "nvidia"}, "aliases": ["英伟达"]} },
+  "perceptron": { comchatx: {"mark": {"logo": "perceptron"}} },
+  "rekaai": { comchatx: {"mark": {"logo": "reka"}} },
+  "relace": { comchatx: {"mark": {"logo": "relace"}} },
+  "sakana": { comchatx: {"mark": {"logo": "sakana"}} },
+  "stepfun": { comchatx: {"card": {"name": "Step"}, "mark": {"logo": "stepfun"}, "aliases": ["阶跃"]} },
+  "tencent": { comchatx: {"mark": {"logo": "tencent"}, "aliases": ["腾讯", "混元"]} },
+  "upstage": { comchatx: {"mark": {"logo": "upstage"}} },
+});
