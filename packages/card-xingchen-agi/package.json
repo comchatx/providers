@@ -1,0 +1,14 @@
+{
+  "name": "@comchatx/card-xingchen-agi",
+  "version": "0.1.0",
+  "description": "The XingChen card on ComChatX's Plugins page: its words and mark. It adds nothing to pi.",
+  "license": "MIT",
+  "author": "ComChatX",
+  "homepage": "https://github.com/comchatx/providers#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/comchatx/providers.git", "directory": "packages/card-xingchen-agi" },
+  "bugs": "https://github.com/comchatx/providers/issues",
+  "type": "module",
+  "pi": {},
+  "files": ["LICENSE"],
+  "comchatx": {"name":"XingChen","section":"models","cardId":"xingchen-agi"}
+}

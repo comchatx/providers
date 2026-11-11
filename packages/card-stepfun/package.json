@@ -1,0 +1,14 @@
+{
+  "name": "@comchatx/card-stepfun",
+  "version": "0.1.0",
+  "description": "The StepFun card on ComChatX's Plugins page: its words and mark. It adds nothing to pi.",
+  "license": "MIT",
+  "author": "ComChatX",
+  "homepage": "https://github.com/comchatx/providers#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/comchatx/providers.git", "directory": "packages/card-stepfun" },
+  "bugs": "https://github.com/comchatx/providers/issues",
+  "type": "module",
+  "pi": {},
+  "files": ["LICENSE"],
+  "comchatx": {"name":"StepFun","section":"models","cardId":"stepfun","card":{"name":"Step"},"mark":{"logo":"stepfun"},"aliases":["阶跃"]}
+}

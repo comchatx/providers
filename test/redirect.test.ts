@@ -17,12 +17,20 @@ it("offers no vendor to a pi with no package and no key", async () => {
 });
 
 it("brings each generated package's vendor to the box's listener, with pi's own models", async () => {
-  const written = readdirSync(PACKAGES).filter(name => name !== "providers" && name !== "typesafe");
+  const written = readdirSync(PACKAGES).filter(name => name !== "providers" && name !== "typesafe" && !name.startsWith("card-"));
   const pi = await open({ packages: written.map(name => join(PACKAGES, name)) });
   const offered = await pi.models();
   expect([...new Set(offered.map(model => model.provider))].sort()).toEqual([...written].sort());
   for (const model of offered) expect(model.baseUrl.startsWith(`http://127.0.0.1:8081/providers/own/${model.provider}`), `${model.provider}/${model.id}: ${model.baseUrl}`).toBe(true);
   for (const name of written) expect((await pi.models(name)).map(model => model.id).sort(), name).toEqual(getBuiltinModels(name as never).map(model => model.id).sort());
+}, 120_000);
+
+it("loads every card's own package and brings pi no provider and no model from it", async () => {
+  const cards = readdirSync(PACKAGES).filter(name => name.startsWith("card-"));
+  expect(cards).toHaveLength(27);
+  const bare = await (await open({ packages: [] })).models();
+  const loaded = await (await open({ packages: cards.map(name => join(PACKAGES, name)) })).models();
+  expect(loaded.map(model => `${model.provider}/${model.id}`).sort()).toEqual(bare.map(model => `${model.provider}/${model.id}`).sort());
 }, 120_000);
 
 it("sends a vendor's call to its route with the placeholder, and keeps its models' own list", async () => {
@@ -113,7 +121,7 @@ it("loses nothing through the generated packages themselves", async () => {
 }, 60_000);
 
 it("is pi's catalogue for all 34 vendors, every field, with the origin and the box's four compat lines the only differences", async () => {
-  const written = readdirSync(PACKAGES).filter(name => name !== "providers" && name !== "typesafe");
+  const written = readdirSync(PACKAGES).filter(name => name !== "providers" && name !== "typesafe" && !name.startsWith("card-"));
   const baseline = await open({ packages: [fixture("catalogue")] });
   const pi = await open({ packages: [fixture("catalogue"), ...written.map(name => join(PACKAGES, name))] });
   for (const provider of written) {

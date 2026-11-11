@@ -1,0 +1,131 @@
+{
+  "ranked": [
+    "deepseek",
+    "openai",
+    "google",
+    "z-ai",
+    "anthropic",
+    "qwen",
+    "mistralai",
+    "tencent",
+    "meta"
+  ],
+  "cards": {
+    "aion-labs": {
+      "mark": {
+        "logo": "aionlabs"
+      }
+    },
+    "amazon": {
+      "mark": {
+        "logo": "nova"
+      },
+      "aliases": [
+        "亚马逊"
+      ]
+    },
+    "bytedance-seed": {
+      "mark": {
+        "logo": "bytedance"
+      },
+      "aliases": [
+        "字节",
+        "豆包"
+      ]
+    },
+    "cohere": {
+      "mark": {
+        "logo": "cohere"
+      }
+    },
+    "dots-studio": {
+      "mark": {
+        "logo": "dotsstudio"
+      }
+    },
+    "fireworks": {
+      "mark": {
+        "logo": "fireworks"
+      }
+    },
+    "ibm-granite": {
+      "mark": {
+        "logo": "ibm"
+      }
+    },
+    "inception": {
+      "mark": {
+        "logo": "inception"
+      }
+    },
+    "liquid": {
+      "mark": {
+        "logo": "liquid"
+      }
+    },
+    "meituan": {
+      "mark": {
+        "logo": "longcat"
+      },
+      "aliases": [
+        "美团"
+      ]
+    },
+    "nvidia": {
+      "card": {
+        "name": "Nemotron"
+      },
+      "mark": {
+        "logo": "nvidia"
+      },
+      "aliases": [
+        "英伟达"
+      ]
+    },
+    "perceptron": {
+      "mark": {
+        "logo": "perceptron"
+      }
+    },
+    "rekaai": {
+      "mark": {
+        "logo": "reka"
+      }
+    },
+    "relace": {
+      "mark": {
+        "logo": "relace"
+      }
+    },
+    "sakana": {
+      "mark": {
+        "logo": "sakana"
+      }
+    },
+    "stepfun": {
+      "card": {
+        "name": "Step"
+      },
+      "mark": {
+        "logo": "stepfun"
+      },
+      "aliases": [
+        "阶跃"
+      ]
+    },
+    "tencent": {
+      "mark": {
+        "logo": "tencent"
+      },
+      "aliases": [
+        "腾讯",
+        "混元"
+      ]
+    },
+    "upstage": {
+      "mark": {
+        "logo": "upstage"
+      }
+    }
+  }
+}

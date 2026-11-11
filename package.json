@@ -5,6 +5,7 @@
   "workspaces": ["packages/*"],
   "scripts": {
     "generate": "node scripts/generate.mjs",
+    "copy-cards": "node scripts/copy-cards.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
