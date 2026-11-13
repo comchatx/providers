@@ -24,3 +24,14 @@ jobs:
           npm run generate
           git add --all
           git diff --cached --exit-code
+
+  published:
+    name: the published packages load in the pinned pi
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+      - run: npm ci
+      - run: npm run test:published

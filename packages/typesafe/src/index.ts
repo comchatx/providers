@@ -7,7 +7,8 @@ export const JEV_MODEL = "jev-latest";
 /** TypeSafe's route on the box's proxy, which serves the one call on the tenant's key first and else the platform's. */
 export const redirectTypeSafe = (pi: ExtensionAPI, options: Pick<RedirectOptions, "origin"> = {}): void => redirect(pi, JEV_PROVIDER, { ...options, route: "/providers/typesafe/v1" });
 
-export type Question = { readonly type: "bool"; readonly instructions: string; readonly criteria: { readonly true: string; readonly false: string } };
+/** A yes-or-no question. `criteria` is optional because pi's TypeSafe route sends a `bool` question as `noul` and reads no criteria. */
+export type Question = { readonly type: "bool"; readonly instructions: string; readonly criteria?: { readonly true: string; readonly false: string } };
 export type Questions = Readonly<Record<string, Question>>;
 /**
  * Why a call gave no answer, in the words `cx-topics` reads. `malformed` and `missing-answers` are calls answered and billed whose answer
@@ -59,7 +60,7 @@ export async function askJev(registry: Registry, state: object, questions: Quest
   const jev = registry.findOfType("classifier", JEV_PROVIDER, JEV_MODEL);
   if (jev === undefined) return { failure: "no-model" };
   try {
-    return read(await registry.classify(jev, { state: state as State, questions }, { maxRetries: 0, timeoutMs: options.timeoutMs, ...(options.signal === undefined ? {} : { signal: options.signal }) }), questions);
+    return read(await registry.classify(jev, { state: state as State, questions: questions as Parameters<Registry["classify"]>[1]["questions"] }, { maxRetries: 0, timeoutMs: options.timeoutMs, ...(options.signal === undefined ? {} : { signal: options.signal }) }), questions);
   } catch (error) {
     return { failure: error instanceof Error && /timed out|abort/i.test(error.message) ? "timeout" : "refused" };
   }

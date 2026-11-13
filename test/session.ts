@@ -30,10 +30,10 @@ export async function standIn(jev: unknown): Promise<{ readonly origin: string; 
 
 export type Known = Readonly<Record<"chat" | "image" | "classifier", readonly Model[]>>;
 export type Model = { readonly id: string; readonly provider: string; readonly api: string; readonly baseUrl: string; readonly compat?: Readonly<Record<string, unknown>> };
-type Options = { readonly packages: readonly unknown[]; readonly env?: Readonly<Record<string, string>>; readonly modelsJson?: unknown; readonly settings?: Readonly<Record<string, unknown>> };
+type Options = { readonly packages: readonly unknown[]; readonly env?: Readonly<Record<string, string>>; readonly modelsJson?: unknown; readonly settings?: Readonly<Record<string, unknown>>; readonly bin?: string };
 
 /** A pi of its own, its home a temporary one, in RPC mode. */
-export async function session({ packages, env = {}, modelsJson, settings: extra = {} }: Options) {
+export async function session({ packages, env = {}, modelsJson, settings: extra = {}, bin = PI }: Options) {
   const root = mkdtempSync(join(tmpdir(), "providers-"));
   const agent = join(root, "agent");
   const cwd = join(root, "cwd");
@@ -43,7 +43,7 @@ export async function session({ packages, env = {}, modelsJson, settings: extra 
   const settings = (list: readonly unknown[]): void => writeFileSync(settingsFile, JSON.stringify({ ...extra, retry: { enabled: false }, quietStartup: true, defaultProjectTrust: "always", packages: list }));
   settings(packages);
   if (modelsJson !== undefined) writeFileSync(join(agent, "models.json"), JSON.stringify(modelsJson));
-  const child = spawn(PI, ["--mode", "rpc", "--no-session"], { cwd, env: { PATH: process.env["PATH"] ?? "/usr/bin:/bin", HOME: root, PI_CODING_AGENT_DIR: agent, EARLY_FILE: join(root, "early.json"), ...env }, stdio: ["pipe", "pipe", "ignore"] });
+  const child = spawn(bin, ["--mode", "rpc", "--no-session"], { cwd, env: { PATH: process.env["PATH"] ?? "/usr/bin:/bin", HOME: root, PI_CODING_AGENT_DIR: agent, EARLY_FILE: join(root, "early.json"), ...env }, stdio: ["pipe", "pipe", "ignore"] });
   const waiting = new Map<string, (message: { success: boolean; data?: unknown; error?: string }) => void>();
   const events: { type: string }[] = [];
   let buffer = "";
@@ -99,8 +99,8 @@ export async function session({ packages, env = {}, modelsJson, settings: extra 
     await vi.waitFor(() => readFileSync(file), { timeout: 20_000, interval: 25 });
   };
   return { ask, models, paths, say, reload, known, early, operate, root, close: async () => {
-    child.kill();
-    await new Promise(done => child.once("exit", done));
+    // A pi that already ended, as one whose package threw at load does, fires no second exit.
+    if (child.exitCode === null && child.signalCode === null) { child.kill(); await new Promise(done => child.once("exit", done)); }
     rmSync(root, { recursive: true, force: true });
   } };
 }

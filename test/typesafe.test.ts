@@ -28,6 +28,14 @@ describe("on the pinned pi", () => {
     expect(JSON.parse(at.hits[0]!.body).model).toBe(JEV_MODEL);
   }, 60_000);
 
+  it("sends a question with no criteria to TypeSafe as noul with its instructions alone, byte for byte what cx-jev-tidy sends today", async () => {
+    const out = answerFile();
+    const { at, pi } = await asked(whole, { JEV_OUT: out, JEV_BARE: "1" });
+    await pi.ask({ type: "prompt", message: "/ask-jev" });
+    expect(JSON.parse(readFileSync(out, "utf8"))).toEqual({ answers: { same: 0.7 } });
+    expect(JSON.parse(at.hits[0]!.body)).toEqual({ model: JEV_MODEL, state: { latest: "a message" }, questions: { same: { type: "noul", instructions: "Same topic?" } } });
+  }, 60_000);
+
   it("reads Jev's package off as refused, and calls nothing", async () => {
     const out = answerFile();
     const { at, pi } = await asked(whole, { JEV_OUT: out, JEV_OFF: "1" });

@@ -14,6 +14,7 @@ A manifest and one call. Its extension calls `redirect` from `@comchatx/provider
 - No package carries the `pi-package` keyword, so none is listed in pi's gallery or on ComChatX's Plugins page: a seller adds a vendor by its key or sign-in on its maker card, and ComChatX installs the package by name.
 
 `@comchatx/typesafe` is the one written by hand: it also holds `askJev`, the client for TypeSafe's classifier, for other packages to depend on.
+A question's `criteria` is optional there, since pi sends a `bool` question to TypeSafe as `noul` and reads no criteria.
 
 Radius has no package: its models are the organisation's, from the gateway per sign-in, and stay in the image.
 
@@ -24,6 +25,10 @@ A card's package is a manifest, its `comchatx` field and the notice: `"pi": {}`,
 `npm run generate` writes `packages/<provider>/` from `template/`, for every provider of the pinned pi's registry except those `scripts/vendors.mjs` names with why, and `packages/card-<id>/` from `template-card/`, for every card `scripts/cards.json` names, with its words from `CARD_SAID` in `scripts/vendors.mjs`. CI fails if the packages differ from what it writes. Never edit a generated package by hand.
 
 `scripts/cards.json` is copied from the product: `npm run copy-cards -- <path to the comchatx checkout>` writes the cards its `src/shared/model-makers.json` lists with no provider, each with its name. Never edit it by hand.
+
+## Checking what is published
+
+`npm run test:published`, its own job in CI, packs every package as npm would publish it, installs them with npm into a fresh pi of the version the product pins (`PINNED_PI` in `test/published.pi.ts`), starts that pi with no network, and reads what it registered: each provider's package its provider at the box's proxy, `@comchatx/typesafe` the classifier `jev-latest` at its route. It fails when a package does not load or registers nothing, and prints the providers pi lists that no package registers.
 
 ## Publishing
 
