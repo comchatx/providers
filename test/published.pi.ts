@@ -18,8 +18,8 @@ afterAll(() => rmSync(scratch, { recursive: true, force: true }));
 const npm = (cwd: string, ...args: readonly string[]): string => execFileSync("npm", ["--no-audit", "--no-fund", ...args], { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
 const timed = <T>(what: string, run: () => T): T => { const from = performance.now(); const out = run(); console.log(`${what}: ${((performance.now() - from) / 1000).toFixed(1)} s`); return out; };
 
-// Each package as npm would publish it, installed by npm beside the others into a pi of the pinned version; pi started with no network
-// reads them, and a probe loaded after them writes what it registered. No retry, and pi's home is a fresh one.
+// Each package as npm would publish it, installed by npm beside the others into a pi of the pinned version; pi started with `PI_OFFLINE=1`
+// and a dead HTTP(S) proxy reads them, and a probe loaded after them writes what it registered. No retry, and pi's home is a fresh one.
 it("loads every package the repository publishes in the pinned pi, each registering its provider at the box's proxy", async () => {
   const pi = join(scratch, "pi");
   const tarballs = join(scratch, "tarballs");
@@ -41,6 +41,7 @@ it("loads every package the repository publishes in the pinned pi, each register
   const host = await session({
     bin: join(pi, "node_modules", ".bin", "pi"),
     packages: [...extensions.map(one => one.dir), fixture("registered")],
+    // What is set, not a proof: a connection made around pi's offline flag and the proxy would not fail this test.
     env: { PI_OFFLINE: "1", NODE_USE_ENV_PROXY: "1", HTTP_PROXY: "http://127.0.0.1:9", HTTPS_PROXY: "http://127.0.0.1:9" },
   });
   try {

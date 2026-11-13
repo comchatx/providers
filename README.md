@@ -28,7 +28,7 @@ A card's package is a manifest, its `comchatx` field and the notice: `"pi": {}`,
 
 ## Checking what is published
 
-`npm run test:published`, its own job in CI, packs every package as npm would publish it, installs them with npm into a fresh pi of the version the product pins (`PINNED_PI` in `test/published.pi.ts`), starts that pi with no network, and reads what it registered: each provider's package its provider at the box's proxy, `@comchatx/typesafe` the classifier `jev-latest` at its route. It fails when a package does not load or registers nothing, and prints the providers pi lists that no package registers.
+`npm run test:published`, its own job in CI, packs every package as npm would publish it, installs them with npm into a fresh pi of the version the product pins (`PINNED_PI` in `test/published.pi.ts`), starts that pi with `PI_OFFLINE=1` and its HTTP(S) proxy set to a closed port on loopback, and reads what it registered: each provider's package its provider at the box's proxy, `@comchatx/typesafe` the classifier `jev-latest` at its route. It fails when a package does not load or registers nothing, and prints the providers pi lists that no package registers. It does not prove that no connection was made: a package that ignores both settings could still reach the network.
 
 ## Publishing
 
