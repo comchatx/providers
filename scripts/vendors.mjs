@@ -18,7 +18,7 @@ export const VERSION = "0.1.1";
 
 /**
  * What the image's block says of a vendor that pi's list does not, with what the Plugins page reads from a package's `comchatx` field
- * (its mark, card, search words and plans), and the version of each package moved past `VERSION`.
+ * (its mark, card, search words and plans, and the steps of its sign-in card), and the version of each package moved past `VERSION`.
  */
 export const SAID = Object.freeze({
   "ant-ling": { version: "0.1.2", comchatx: {"mark": {"logo": "antgroup"}, "aliases": ["蚂蚁", "百灵"]} },
@@ -36,7 +36,7 @@ export const SAID = Object.freeze({
   "mistral": { version: "0.1.2", comchatx: {"card": {"vendor": "Mistral AI"}, "mark": {"logo": "mistral"}} },
   "moonshotai": { version: "0.1.2", comchatx: {"card": {"name": "Kimi", "vendor": "Moonshot AI", "keyName": "Moonshot", "description": {"en": "Kimi K3 is Moonshot AI's open-weights model for long documents and work that takes many steps.\n\nSuitable for long Chinese or English documents and tasks that take several steps in sequence.", "zh": "Kimi K3 是 Moonshot AI 的开放权重模型，适合处理长文档和需要很多步骤的工作。\n\n适合处理中英文长文档，以及需要连续完成多个步骤的任务。"}}, "mark": {"logo": "moonshot"}, "aliases": ["月之暗面"], "plans": ["Kimi Code"]} },
   "nvidia": { version: "0.1.2", comchatx: {"mark": {"logo": "nvidia"}} },
-  "openai": { compat: Object.fromEntries(["gpt-6-astra", "gpt-6-luna", "gpt-6-sol", "gpt-6.1-sol"].map(id => [id, { supportsMidConvoEffort: false }])), version: "0.1.2", comchatx: {"card": {"name": "GPT", "vendor": "OpenAI", "description": {"en": "GPT is OpenAI's model family. GPT-6 Sol is designed for reasoning over long documents and tables, while GPT-6 Luna prioritises speed and lower cost. Both can read images and files.\n\nChoose Sol for long reports and multi-step instructions. Choose Luna for everyday questions and summaries.", "zh": "GPT 是 OpenAI 的模型系列。GPT-6 Sol 适合分析长文档和表格；GPT-6 Luna 响应更快、价格更低。两者都能读取图片和文件。\n\n长报告和多步骤任务可选 Sol；日常提问和摘要可选 Luna。"}}, "mark": {"logo": "openai"}, "aliases": ["ChatGPT"], "plans": ["ChatGPT"]} },
+  "openai": { compat: Object.fromEntries(["gpt-6-astra", "gpt-6-luna", "gpt-6-sol", "gpt-6.1-sol"].map(id => [id, { supportsMidConvoEffort: false }])), version: "0.1.3", comchatx: {"card": {"name": "GPT", "vendor": "OpenAI", "description": {"en": "GPT is OpenAI's model family. GPT-6 Sol is designed for reasoning over long documents and tables, while GPT-6 Luna prioritises speed and lower cost. Both can read images and files.\n\nChoose Sol for long reports and multi-step instructions. Choose Luna for everyday questions and summaries.", "zh": "GPT 是 OpenAI 的模型系列。GPT-6 Sol 适合分析长文档和表格；GPT-6 Luna 响应更快、价格更低。两者都能读取图片和文件。\n\n长报告和多步骤任务可选 Sol；日常提问和摘要可选 Luna。"}}, "mark": {"logo": "openai"}, "aliases": ["ChatGPT"], "plans": ["ChatGPT"], "signIn": {"steps": [{"kind": "link"}, {"kind": "address", "words": {"en": "After you sign in, the browser stops on a page that won't open. That means the sign-in worked.", "zh": "登录后，浏览器会停在一个无法打开的页面，这表示登录已成功。"}}, {"kind": "field", "words": {"en": "Copy the whole address from the address bar, then come back and paste it here.", "zh": "复制地址栏里的完整网址，回到这里粘贴。"}}]}} },
   "opencode": { version: "0.1.2", comchatx: {"mark": {"logo": "opencode"}} },
   "opencode-go": { version: "0.1.2", comchatx: {"mark": {"logo": "opencode"}} },
   "openrouter": { version: "0.1.2", comchatx: {"aggregator": true, "mark": {"logo": "openrouter"}} },
