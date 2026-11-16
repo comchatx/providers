@@ -18,7 +18,7 @@ A question's `criteria` is optional there, since pi sends a `bool` question to T
 
 Radius has no package: its models are the organisation's, from the gateway per sign-in, and stay in the image.
 
-A card's package is a manifest, its `comchatx` field and the notice: `"pi": {}`, no extension and no dependency. Its card's models come through the balance at OpenRouter, so pi registers no provider for it, and no computer installs it. The Plugins page reads it on npm as it reads a provider's: the card's words, its downloads, its update and its links.
+A card's package is a manifest, its `comchatx` field and the notice: `"pi": { "extensions": [] }`, no extension and no dependency. Its card's models come through the balance at OpenRouter, so pi registers no provider for it, and no computer installs it. The Plugins page reads it on npm as it reads a provider's: the card's words, its downloads, its update and its links.
 
 ## How one is generated
 
