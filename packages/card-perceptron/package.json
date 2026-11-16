@@ -8,7 +8,7 @@
   "repository": { "type": "git", "url": "git+https://github.com/comchatx/providers.git", "directory": "packages/card-perceptron" },
   "bugs": "https://github.com/comchatx/providers/issues",
   "type": "module",
-  "pi": {},
+  "pi": { "extensions": [] },
   "files": ["LICENSE"],
   "comchatx": {"name":"Perceptron","section":"models","cardId":"perceptron","mark":{"logo":"perceptron"}}
 }

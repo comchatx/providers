@@ -29,15 +29,17 @@ it("writes each card's own package on disk, byte for byte, named card- and the c
   for (const { card, dir, files } of made) {
     for (const [name, text] of Object.entries(files)) expect(readFileSync(join("packages", dir, name), "utf8"), `${dir}/${name}`).toBe(text);
     const manifest = JSON.parse(files["package.json"]);
-    expect(manifest).toMatchObject({ name: `@comchatx/card-${card}`, pi: {}, files: ["LICENSE"], comchatx: { name: cards[card], section: "models", cardId: card } });
-    expect(Object.keys(manifest.pi), dir).toEqual([]);
+    expect(manifest).toMatchObject({ name: `@comchatx/card-${card}`, pi: { extensions: [] }, files: ["LICENSE"], comchatx: { name: cards[card], section: "models", cardId: card } });
+    // pi 1.5 reads a manifest that names no resource as none, and loads a package on a local path as an extension: an empty list says none.
+    expect(manifest.pi, dir).toEqual({ extensions: [] });
     expect([Object.hasOwn(manifest, "dependencies"), Object.hasOwn(manifest, "peerDependencies"), Object.hasOwn(manifest, "keywords")], dir).toEqual([false, false, false]);
     expect(Object.keys(files).sort(), dir).toEqual(["LICENSE", "package.json"]);
   }
 });
 
 it("carries each card's words as the product's maker-cards.json held them, none rewritten, and words for no card it does not package", async () => {
-  const held = moved.cards;
+  // The fixture is never rewritten: a card the product no longer lists has left the words it held there behind.
+  const held = Object.fromEntries(Object.entries(moved.cards).filter(([card]) => Object.hasOwn(cards, card)));
   expect(Object.fromEntries(Object.entries(CARD_SAID).map(([card, said]) => [card, said.comchatx]))).toEqual(held);
   for (const { card, files } of await cardPackages()) {
     const { name: _name, section: _section, cardId: _cardId, ...words } = JSON.parse(files["package.json"]).comchatx;
@@ -56,7 +58,7 @@ it("gives every provider of the pinned pi a package or a reason", async () => {
   const made = (await packages()).map(one => one.provider);
   expect([...made, ...Object.keys(NOT_GENERATED)].sort()).toEqual(builtinProviders().map(one => one.id).sort());
   expect(made).not.toContain("radius");
-  expect(made).toHaveLength(34);
+  expect(made).toHaveLength(37);
 });
 
 it("names each package by its provider and this repository, with the shelf fields the Plugins page reads", async () => {

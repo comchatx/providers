@@ -1,13 +1,13 @@
 /**
- * pi's providers that get no package, each with why. The first seven are the product's `LEFT_OUT` (`src/shared/model-makers-generate.ts`),
- * which the proxy cannot carry, `typesafe` among them only because its package is written by hand: it holds Jev's client.
+ * pi's providers that get no package, each with why. The first five are the product's `LEFT_OUT` (`src/shared/model-makers-generate.ts`),
+ * which the proxy cannot carry, `typesafe` among them only because its package is written by hand: it holds Jev's client. The three clouds
+ * stay out until a seller asks for one (Jack, 2026-11-15): each takes a value beside the key. Amazon Bedrock and Google Vertex have packages,
+ * reached one way each, by Bedrock's bearer token and Vertex's API key.
  */
 export const NOT_GENERATED = Object.freeze({
-  "amazon-bedrock": "SigV4-signed requests across two regional hosts",
-  azure: "the endpoint is the tenant's own Azure resource",
-  "cloudflare-ai-gateway": "the base URL is templated with the tenant's account and gateway",
-  "cloudflare-workers-ai": "the base URL is templated with the tenant's account",
-  "google-vertex": "application-default credentials and a location-templated host",
+  azure: "the endpoint is the tenant's own Azure resource; kept out until a seller asks for it (Jack, 2026-11-15)",
+  "cloudflare-ai-gateway": "the base URL is templated with the tenant's account and gateway; kept out until a seller asks for it (Jack, 2026-11-15)",
+  "cloudflare-workers-ai": "the base URL is templated with the tenant's account; kept out until a seller asks for it (Jack, 2026-11-15)",
   "openai-codex": "a subscription login, not an API key",
   typesafe: "written by hand in packages/typesafe",
   radius: "its models are the organisation's, from the gateway per sign-in, which a package cannot write: it stays in the image",
@@ -18,11 +18,14 @@ export const VERSION = "0.1.1";
 
 /**
  * What the image's block says of a vendor that pi's list does not, with what the Plugins page reads from a package's `comchatx` field
- * (its mark, card, search words and plans, and the steps of its sign-in card), and the version of each package moved past `VERSION`.
+ * (its mark, card, search words and plans, and the steps of its sign-in card), the version of each package moved past `VERSION`, and what
+ * its extension sets in pi's environment before it points the provider at the box: Bedrock's client speaks HTTP/2 to the box's HTTP/1.1
+ * listener unless told otherwise.
  */
 export const SAID = Object.freeze({
   "ant-ling": { version: "0.1.2", comchatx: {"mark": {"logo": "antgroup"}, "aliases": ["蚂蚁", "百灵"]} },
   "anthropic": { version: "0.1.2", comchatx: {"card": {"name": "Claude", "vendor": "Anthropic", "description": {"en": "Claude is Anthropic's model family. Opus 5.5 is intended for demanding work, Sonnet 5 balances capability and cost, and Haiku 4.5 prioritises speed and lower cost. All three can read images and files.\n\nSuitable for long analyses, detailed instructions and work where accuracy matters more than model cost.", "zh": "Claude 是 Anthropic 的模型系列。Opus 5.5 适合要求较高的任务；Sonnet 5 兼顾能力和价格；Haiku 4.5 响应更快、价格更低。三者都能读取图片和文件。\n\n适合长篇分析、详细指令，以及准确性比模型费用更重要的任务。"}}, "mark": {"logo": "anthropic"}, "plans": ["Claude"]} },
+  "amazon-bedrock": { env: { AWS_BEDROCK_FORCE_HTTP1: "1" } },
   "baseten": { version: "0.1.2", comchatx: {"mark": {"logo": "baseten"}} },
   "cerebras": { version: "0.1.2", comchatx: {"mark": {"logo": "cerebras"}} },
   "deepseek": { version: "0.1.2", comchatx: {"card": {"vendor": "DeepSeek", "description": {"en": "DeepSeek V4 is an open-weights model from DeepSeek with lower pricing than flagship models.\n\nA lower-cost option for bulk work when response time is less important.", "zh": "DeepSeek V4 是 DeepSeek 的开放权重模型，价格低于旗舰模型。\n\n适合对速度要求不高、需要控制成本的批量任务。"}}, "mark": {"logo": "deepseek"}, "aliases": ["深度求索"]} },
@@ -64,7 +67,6 @@ export const CARD_SAID = Object.freeze({
   "dots-studio": { comchatx: {"mark": {"logo": "dotsstudio"}} },
   "fireworks": { comchatx: {"mark": {"logo": "fireworks"}} },
   "ibm-granite": { comchatx: {"mark": {"logo": "ibm"}} },
-  "inception": { comchatx: {"mark": {"logo": "inception"}} },
   "liquid": { comchatx: {"mark": {"logo": "liquid"}} },
   "meituan": { comchatx: {"mark": {"logo": "longcat"}, "aliases": ["美团"]} },
   "nvidia": { comchatx: {"card": {"name": "Nemotron"}, "mark": {"logo": "nvidia"}, "aliases": ["英伟达"]} },

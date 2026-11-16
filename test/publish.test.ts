@@ -9,17 +9,24 @@ const cleanups: (() => unknown)[] = [];
 afterEach(async () => { for (const cleanup of cleanups.splice(0).reverse()) await cleanup(); });
 const scratch = (): string => { const dir = mkdtempSync(join(tmpdir(), "providers-pack-")); cleanups.push(() => rmSync(dir, { recursive: true, force: true })); return dir; };
 const npm = (cwd: string, ...args: readonly string[]): string => execFileSync("npm", [...args], { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
-const pack = (into: string): readonly { readonly name: string; readonly filename: string; readonly files: readonly { readonly path: string }[] }[] => JSON.parse(npm(".", "pack", "--workspaces", "--offline", "--ignore-scripts", "--json", "--pack-destination", into));
+type Packed = { readonly name: string; readonly filename: string; readonly files: readonly { readonly path: string }[] };
+// npm 12 keys its answer by the package's name; earlier ones answer a list.
+const pack = (into: string): readonly Packed[] => {
+  const answer = JSON.parse(npm(".", "pack", "--workspaces", "--offline", "--ignore-scripts", "--json", "--pack-destination", into)) as Packed[] | Record<string, Packed>;
+  return Array.isArray(answer) ? answer : Object.values(answer);
+};
 const NAMES = readdirSync("packages").map(name => `@comchatx/${name}`).sort();
-/** The packages npm has never held, which the bootstrap publishes, each trusted at its first tag: the cards' own. */
-const FIRST = NAMES.filter(name => name.startsWith("@comchatx/card-"));
+/** The providers whose package npm has never held: the clouds and the plan pi added after the others went out. */
+const NEW_PROVIDERS: readonly string[] = ["@comchatx/amazon-bedrock", "@comchatx/google-vertex", "@comchatx/qwen-token-plan-individual-cn"];
+/** The packages npm has never held, which the bootstrap publishes, each trusted at its first tag: the cards' own and the new providers'. */
+const FIRST = NAMES.filter(name => name.startsWith("@comchatx/card-") || NEW_PROVIDERS.includes(name));
 const WORKFLOW = readFileSync(".github/workflows/publish-bootstrap.yml", "utf8");
 
 it("puts the root's notice in every tarball, byte for byte", () => {
   const into = scratch();
   const packed = pack(into);
   expect(packed.map(one => one.name).sort()).toEqual(NAMES);
-  expect(NAMES).toHaveLength(63);
+  expect(NAMES).toHaveLength(66);
   const notice = readFileSync("LICENSE", "utf8");
   for (const { name, filename, files } of packed) {
     expect(files.map(file => file.path), name).toContain("LICENSE");
@@ -54,7 +61,7 @@ it("runs the bootstrap at a person's press alone, and leaves the token to npm", 
 it("lists every card's package in the trust loop, and no package npm already trusts, on the file name npm takes", () => {
   const section = readFileSync("README.md", "utf8").split("## Trust, at a package's first tag")[1]!.split("\n## ")[0]!;
   expect([...section.matchAll(/^ {2}(@comchatx\/[a-z0-9-]+)/gm)].map(match => match[1]).sort()).toEqual(FIRST);
-  expect(FIRST).toHaveLength(27);
+  expect(FIRST).toHaveLength(30);
   expect(section).toContain("npm 11.15 or later");
   expect(section).toContain("npm --version");
   expect(section).toContain("npm install -g npm@latest");

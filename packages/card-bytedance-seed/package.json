@@ -8,7 +8,7 @@
   "repository": { "type": "git", "url": "git+https://github.com/comchatx/providers.git", "directory": "packages/card-bytedance-seed" },
   "bugs": "https://github.com/comchatx/providers/issues",
   "type": "module",
-  "pi": {},
+  "pi": { "extensions": [] },
   "files": ["LICENSE"],
   "comchatx": {"name":"ByteDance Seed","section":"models","cardId":"bytedance-seed","mark":{"logo":"bytedance"},"aliases":["字节","豆包"]}
 }

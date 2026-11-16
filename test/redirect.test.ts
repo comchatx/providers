@@ -238,3 +238,16 @@ it("starts on a saved model of a listed vendor with no key, at the box from the 
   expect(state.model?.provider).toBe("openrouter");
   expect(state.model?.baseUrl.startsWith(`${at.origin}/providers/own/openrouter/`)).toBe(true);
 }, 60_000);
+
+it("lets a Bedrock call reach the box's HTTP/1.1 listener only with its package's word to the AWS client, as a bearer with the placeholder", async () => {
+  const model = "us.anthropic.claude-opus-5-5";
+  const path = `/providers/own/amazon-bedrock/model/${encodeURIComponent(model)}/converse-stream`;
+  // The AWS client speaks HTTP/2 unless told otherwise, and the box's listener speaks HTTP/1.1: without the package's word nothing arrives.
+  const bare = await listener();
+  await (await open({ packages: [fixture("routed")], env: routed(bare.origin, "amazon-bedrock") })).say("amazon-bedrock", model);
+  expect(bare.hits).toEqual([]);
+  const at = await listener();
+  await (await open({ packages: [join(PACKAGES, "amazon-bedrock"), fixture("routed")], env: routed(at.origin, "amazon-bedrock") })).say("amazon-bedrock", model);
+  // The AWS client retries the stand-in's answer, so the call may arrive more than once, each time the same.
+  expect(new Set(at.hits.map(({ url, key }) => `${url} ${key}`))).toEqual(new Set([`${path} Bearer cmx-placeholder-key`]));
+}, 60_000);
