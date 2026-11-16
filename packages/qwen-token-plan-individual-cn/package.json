@@ -1,0 +1,16 @@
+{
+  "name": "@comchatx/qwen-token-plan-individual-cn",
+  "version": "0.1.1",
+  "description": "Qwen Token Plan Individual CN in pi, through the ComChatX box's model proxy.",
+  "license": "MIT",
+  "author": "ComChatX",
+  "homepage": "https://github.com/comchatx/providers#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/comchatx/providers.git", "directory": "packages/qwen-token-plan-individual-cn" },
+  "bugs": "https://github.com/comchatx/providers/issues",
+  "type": "module",
+  "pi": { "extensions": ["./extension.ts"] },
+  "files": ["extension.ts", "LICENSE"],
+  "comchatx": {"name":"Qwen Token Plan Individual CN","section":"models","provider":"qwen-token-plan-individual-cn"},
+  "dependencies": { "@comchatx/providers": "^0.1.0" },
+  "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
+}

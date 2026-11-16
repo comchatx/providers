@@ -8,7 +8,7 @@
   "repository": { "type": "git", "url": "git+https://github.com/comchatx/providers.git", "directory": "packages/card-xingchen-agi" },
   "bugs": "https://github.com/comchatx/providers/issues",
   "type": "module",
-  "pi": {},
+  "pi": { "extensions": [] },
   "files": ["LICENSE"],
   "comchatx": {"name":"XingChen","section":"models","cardId":"xingchen-agi"}
 }

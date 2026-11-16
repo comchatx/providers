@@ -18,7 +18,7 @@ A question's `criteria` is optional there, since pi sends a `bool` question to T
 
 Radius has no package: its models are the organisation's, from the gateway per sign-in, and stay in the image.
 
-A card's package is a manifest, its `comchatx` field and the notice: `"pi": {}`, no extension and no dependency. Its card's models come through the balance at OpenRouter, so pi registers no provider for it, and no computer installs it. The Plugins page reads it on npm as it reads a provider's: the card's words, its downloads, its update and its links.
+A card's package is a manifest, its `comchatx` field and the notice: `"pi": { "extensions": [] }`, no extension and no dependency. Its card's models come through the balance at OpenRouter, so pi registers no provider for it, and no computer installs it. The Plugins page reads it on npm as it reads a provider's: the card's words, its downloads, its update and its links.
 
 ## How one is generated
 
@@ -49,6 +49,9 @@ If any of the three is not so, or cannot be read, make a fresh one with exactly 
 A card the product gains with no provider's package costs, as the tests stand today:
 
 1. **Here, a pull request.** `npm run copy-cards -- <path to the comchatx checkout>` from a checkout of the product's `main`, then `npm run generate`. Tests then fail until they are changed in the same pull request: the count of 27 card packages in `test/generate.test.ts`, `test/redirect.test.ts` and `test/publish.test.ts`, the count of 63 tarballs in `test/publish.test.ts`, and, where the card has words, the equality of `CARD_SAID` with `test/fixtures/maker-cards.json`. That fixture is the product's file as the 18 cards' words left it; a new card's words are signed apart, so the test changes to hold the 18 as they were and the new card beside them, never the fixture rewritten as if the product had held them.
+   - **`CARD_SAID`.** A new card's signed words join `CARD_SAID` in `scripts/vendors.mjs`; a card the product no longer lists leaves its entry, and its words in the fixture are left behind, not deleted.
+   - **`npm install`.** Run it after `generate`, and commit `package-lock.json` with the packages: each package is a workspace, so a package added or removed changes the lock, and `npm ci` refuses a lock that does not match.
+   - **The trust loop.** The new package's name joins the loop below, in its place in the order, and a removed card's leaves it; `test/publish.test.ts` holds the loop to the packages npm has never held.
 2. **The product, a pull request.** The card joins `src/shared/maker-cards.json`'s `packaged`, whose test fails until it does, and `provider-packages.test.ts`'s count of 27 moves with it.
 3. **Jack's steps.** The merge sentences; the token check above; a press of Run workflow on `publish-bootstrap.yml`.
 4. **At the card's first later release.** Its `npm trust` line, below, in the same sitting as its tag.
@@ -61,10 +64,11 @@ npm's page (https://docs.npmjs.com/trusted-publishers): "A newly created trusted
 
 This needs npm 11.15 or later: check with `npm --version`, and upgrade with `npm install -g npm@latest`. Run it in a terminal signed in to npm with the account that owns `@comchatx`; npm asks for 2FA.
 
-The line for one package is the loop's body with its name: `npm trust github @comchatx/<directory> --file release.yml --repo comchatx/providers --allow-publish --yes`. The loop runs it for every card's package, for a sitting that tags them all; at its first package, enable the website's option to skip 2FA for the next 5 minutes, or it asks again for each. It stops at the first failure, naming the package.
+The line for one package is the loop's body with its name: `npm trust github @comchatx/<directory> --file release.yml --repo comchatx/providers --allow-publish --yes`. The loop runs it for every card's package and every provider's package npm has not yet held, for a sitting that tags them all; at its first package, enable the website's option to skip 2FA for the next 5 minutes, or it asks again for each. It stops at the first failure, naming the package.
 
 ```sh
 for name in \
+  @comchatx/amazon-bedrock \
   @comchatx/card-aion-labs \
   @comchatx/card-amazon \
   @comchatx/card-bytedance-seed \
@@ -73,7 +77,6 @@ for name in \
   @comchatx/card-elorian \
   @comchatx/card-fireworks \
   @comchatx/card-ibm-granite \
-  @comchatx/card-inception \
   @comchatx/card-liquid \
   @comchatx/card-meituan \
   @comchatx/card-nex-agi \
@@ -85,13 +88,16 @@ for name in \
   @comchatx/card-reflection \
   @comchatx/card-rekaai \
   @comchatx/card-relace \
+  @comchatx/card-ricursiveai \
   @comchatx/card-sakana \
   @comchatx/card-stepfun \
   @comchatx/card-tencent \
   @comchatx/card-thinkingmachines \
   @comchatx/card-unbiased \
   @comchatx/card-upstage \
-  @comchatx/card-xingchen-agi
+  @comchatx/card-xingchen-agi \
+  @comchatx/google-vertex \
+  @comchatx/qwen-token-plan-individual-cn
 do
   npm trust github "$name" --file release.yml --repo comchatx/providers --allow-publish --yes || { echo "failed: $name"; break; }
   sleep 2

@@ -19,7 +19,8 @@ export async function packages(root = ROOT) {
     const comchatx = JSON.stringify({ name, section: "models", provider: id, ...said.comchatx });
     return { provider: id, files: {
       "package.json": fill(manifest, { provider: id, name, comchatx, version: said.version ?? VERSION }),
-      "extension.ts": fill(extension, { provider: id, options: said.compat === undefined ? "" : `, { compat: ${JSON.stringify(said.compat)} }` }),
+      "extension.ts": fill(extension, { provider: id, options: said.compat === undefined ? "" : `, { compat: ${JSON.stringify(said.compat)} }`,
+        env: Object.entries(said.env ?? {}).map(([name, value]) => `  process.env[${JSON.stringify(name)}] = ${JSON.stringify(value)};\n`).join("") }),
       LICENSE: license,
     } };
   });

@@ -8,7 +8,7 @@
   "repository": { "type": "git", "url": "git+https://github.com/comchatx/providers.git", "directory": "packages/card-tencent" },
   "bugs": "https://github.com/comchatx/providers/issues",
   "type": "module",
-  "pi": {},
+  "pi": { "extensions": [] },
   "files": ["LICENSE"],
   "comchatx": {"name":"Tencent","section":"models","cardId":"tencent","mark":{"logo":"tencent"},"aliases":["腾讯","混元"]}
 }

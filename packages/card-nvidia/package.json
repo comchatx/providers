@@ -8,7 +8,7 @@
   "repository": { "type": "git", "url": "git+https://github.com/comchatx/providers.git", "directory": "packages/card-nvidia" },
   "bugs": "https://github.com/comchatx/providers/issues",
   "type": "module",
-  "pi": {},
+  "pi": { "extensions": [] },
   "files": ["LICENSE"],
   "comchatx": {"name":"NVIDIA","section":"models","cardId":"nvidia","card":{"name":"Nemotron"},"mark":{"logo":"nvidia"},"aliases":["英伟达"]}
 }
