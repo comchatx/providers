@@ -1,6 +1,6 @@
 {
   "name": "@comchatx/google-vertex",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Google Vertex AI in pi, through the ComChatX box's model proxy.",
   "license": "MIT",
   "author": "ComChatX",
@@ -10,7 +10,7 @@
   "type": "module",
   "pi": { "extensions": ["./extension.ts"] },
   "files": ["extension.ts", "LICENSE"],
-  "comchatx": {"name":"Google Vertex AI","section":"models","provider":"google-vertex"},
+  "comchatx": {"name":"Google Vertex AI","section":"models","provider":"google-vertex","card":{"description":{"en":"In the Google Cloud console, open Express Mode and sign up to get an API key, then paste it into this plugin's Settings. Gemini models then show under Models and in chat. Signing up needs a @gmail.com Google account, and service-account files are not accepted.","zh":"在 Google Cloud 控制台打开 Express Mode，注册后会得到一个 API Key，粘贴到这个插件的「设置」里。之后 Gemini 模型会列在「模型」中，也能在对话中选用。注册要用 @gmail.com 的 Google 账号；服务账号文件不能用。"}}},
   "dependencies": { "@comchatx/providers": "^0.1.0" },
   "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
 }

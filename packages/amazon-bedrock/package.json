@@ -1,6 +1,6 @@
 {
   "name": "@comchatx/amazon-bedrock",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Amazon Bedrock in pi, through the ComChatX box's model proxy.",
   "license": "MIT",
   "author": "ComChatX",
@@ -10,7 +10,7 @@
   "type": "module",
   "pi": { "extensions": ["./extension.ts"] },
   "files": ["extension.ts", "LICENSE"],
-  "comchatx": {"name":"Amazon Bedrock","section":"models","provider":"amazon-bedrock"},
+  "comchatx": {"name":"Amazon Bedrock","section":"models","provider":"amazon-bedrock","card":{"description":{"en":"In the AWS console, open Amazon Bedrock, go to API keys and generate a long-term API key, then paste it into this plugin's Settings. Its models then show under Models and in chat. A short-term API key lasts 12 hours at most, so it does not suit this plugin, and AWS access keys are not accepted.","zh":"在 AWS 控制台打开 Amazon Bedrock，在「API keys」中生成一个长期 API Key，粘贴到这个插件的「设置」里。之后它的模型会列在「模型」中，也能在对话中选用。短期 API Key 最多 12 小时就会失效，不适合这里；AWS 访问密钥不能用。"}}},
   "dependencies": { "@comchatx/providers": "^0.1.0" },
   "peerDependencies": { "@earendil-works/pi-coding-agent": "*" }
 }

@@ -95,3 +95,24 @@ it("copies from the product's registry exactly the cards no provider serves, eac
     expect(readFileSync(join(dir, "root/scripts/cards.json"), "utf8")).toBe('{\n  "alpha": "Alpha",\n  "zeta": "Zeta"\n}\n');
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+it("gives the Amazon Bedrock and Google Vertex AI cards their signed Overview, how to get the key each takes, and no line or README the card does not read", async () => {
+  const signed = {
+    "amazon-bedrock": {
+      en: "In the AWS console, open Amazon Bedrock, go to API keys and generate a long-term API key, then paste it into this plugin's Settings. Its models then show under Models and in chat. A short-term API key lasts 12 hours at most, so it does not suit this plugin, and AWS access keys are not accepted.",
+      zh: "在 AWS 控制台打开 Amazon Bedrock，在「API keys」中生成一个长期 API Key，粘贴到这个插件的「设置」里。之后它的模型会列在「模型」中，也能在对话中选用。短期 API Key 最多 12 小时就会失效，不适合这里；AWS 访问密钥不能用。",
+    },
+    "google-vertex": {
+      en: "In the Google Cloud console, open Express Mode and sign up to get an API key, then paste it into this plugin's Settings. Gemini models then show under Models and in chat. Signing up needs a @gmail.com Google account, and service-account files are not accepted.",
+      zh: "在 Google Cloud 控制台打开 Express Mode，注册后会得到一个 API Key，粘贴到这个插件的「设置」里。之后 Gemini 模型会列在「模型」中，也能在对话中选用。注册要用 @gmail.com 的 Google 账号；服务账号文件不能用。",
+    },
+  };
+  const made = await packages();
+  for (const [provider, description] of Object.entries(signed)) {
+    const { files } = made.find(one => one.provider === provider)!;
+    const manifest = JSON.parse(files["package.json"]);
+    expect(manifest.version, provider).toBe("0.1.2");
+    expect(manifest.comchatx, provider).toEqual({ name: manifest.comchatx.name, section: "models", provider, card: { description } });
+    expect(Object.keys(files).sort(), provider).toEqual(["LICENSE", "extension.ts", "package.json"]);
+  }
+});
