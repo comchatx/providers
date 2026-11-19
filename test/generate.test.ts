@@ -37,9 +37,12 @@ it("writes each card's own package on disk, byte for byte, named card- and the c
   }
 });
 
-it("carries each card's words as the product's maker-cards.json held them, none rewritten, and words for no card it does not package", async () => {
+/** Words a card gained after they moved here, signed apart from the product's file and never written into the fixture. */
+const SIGNED_HERE: Readonly<Record<string, Record<string, unknown>>> = { amazon: { card: { vendorZh: "亚马逊" } } };
+
+it("carries each card's words as the product's maker-cards.json held them, none rewritten, with the words signed here beside them, and words for no card it does not package", async () => {
   // The fixture is never rewritten: a card the product no longer lists has left the words it held there behind.
-  const held = Object.fromEntries(Object.entries(moved.cards).filter(([card]) => Object.hasOwn(cards, card)));
+  const held = Object.fromEntries(Object.entries(moved.cards).filter(([card]) => Object.hasOwn(cards, card)).map(([card, words]) => [card, { ...SIGNED_HERE[card], ...(words as object) }]));
   expect(Object.fromEntries(Object.entries(CARD_SAID).map(([card, said]) => [card, said.comchatx]))).toEqual(held);
   for (const { card, files } of await cardPackages()) {
     const { name: _name, section: _section, cardId: _cardId, ...words } = JSON.parse(files["package.json"]).comchatx;
@@ -115,4 +118,17 @@ it("gives the Amazon Bedrock and Google Vertex AI cards their signed Overview, h
     expect(manifest.comchatx, provider).toEqual({ name: manifest.comchatx.name, section: "models", provider, card: { description } });
     expect(Object.keys(files).sort(), provider).toEqual(["LICENSE", "extension.ts", "package.json"]);
   }
+});
+
+it("names Amazon in Chinese as 亚马逊 on its card, in the form the Alibaba and Xiaomi cards carry, at 0.1.1", async () => {
+  const { files } = (await cardPackages()).find(one => one.card === "amazon")!;
+  const manifest = JSON.parse(files["package.json"]);
+  expect(manifest.version).toBe("0.1.1");
+  expect(manifest.comchatx.card).toEqual({ vendorZh: "亚马逊" });
+});
+
+it("draws TypeSafe's card with the typesafe mark", () => {
+  const manifest = JSON.parse(readFileSync("packages/typesafe/package.json", "utf8"));
+  expect(manifest.comchatx.mark).toEqual({ logo: "typesafe" });
+  expect(manifest.version).toBe("0.1.4");
 });

@@ -62,7 +62,7 @@ export const CARD_VERSION = "0.1.0";
  */
 export const CARD_SAID = Object.freeze({
   "aion-labs": { comchatx: {"mark": {"logo": "aionlabs"}} },
-  "amazon": { comchatx: {"mark": {"logo": "nova"}, "aliases": ["亚马逊"]} },
+  "amazon": { version: "0.1.1", comchatx: {"card": {"vendorZh": "亚马逊"}, "mark": {"logo": "nova"}, "aliases": ["亚马逊"]} },
   "bytedance-seed": { comchatx: {"mark": {"logo": "bytedance"}, "aliases": ["字节", "豆包"]} },
   "cohere": { comchatx: {"mark": {"logo": "cohere"}} },
   "dots-studio": { comchatx: {"mark": {"logo": "dotsstudio"}} },
