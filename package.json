@@ -13,6 +13,8 @@
   "devDependencies": {
     "@earendil-works/pi-coding-agent": "1.5.2",
     "@types/node": "26.2.0",
+    "pi-ai-1.6.0": "npm:@earendil-works/pi-ai@1.6.0",
+    "pi-ai-1.6.1": "npm:@earendil-works/pi-ai@1.6.1",
     "typescript": "7.0.2",
     "vitest": "4.1.11"
   }
