@@ -7,8 +7,8 @@ import { afterAll, expect, it, vi } from "vitest";
 import { BOX_ORIGIN } from "@comchatx/providers";
 import { fixture, session } from "./session.js";
 
-/** The pi the product pins (`comchatx` package.json), which every computer runs. */
-export const PINNED_PI = "1.5.2";
+/** The pi the product pins (`src/sandbox/image/pi-runtime/package.json` in comchatx), which every computer runs. */
+export const PINNED_PI = "1.6.1";
 
 type Seen = { readonly provider: string; readonly id: string; readonly baseUrl: string };
 type Registered = { readonly registered: readonly string[] } & Readonly<Record<"chat" | "image" | "classifier", readonly Seen[]>>;
